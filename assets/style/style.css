@@ -556,7 +556,7 @@ body.wildlife-on .wildlife-section {
 }
 .slider {
   background: white;
-  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125);
+  /* box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.125); */
   height: 122px;
   margin: auto;
   overflow: hidden;
@@ -571,9 +571,9 @@ body.wildlife-on .wildlife-section {
     rgba(220, 38, 21, 0) 100%
   );
   content: "";
-  height: 122px;
+  height: 125px;
   position: absolute;
-  width: 200px;
+  width: 25%;
   z-index: 2;
 }
 .slider::after {
