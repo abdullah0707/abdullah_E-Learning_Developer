@@ -14,9 +14,13 @@ body {
   transition: all 300ms linear;
   perspective: 800px;
 }
-#gb-widget-1439{
-	bottom: 50px !important;
+.hKYcqG {
+	padding-bottom: 30px;
 }
+.cLcbjv{
+	display: none !important;
+}
+
 canvas {
   height: 100vh;
   z-index: -10;
