@@ -20,7 +20,9 @@ body {
 .cLcbjv{
 	display: none !important;
 }
-
+.branding.svelte-6myrnq.svelte-6myrnq {
+    display: none !important;
+}
 canvas {
   height: 100vh;
   z-index: -10;
