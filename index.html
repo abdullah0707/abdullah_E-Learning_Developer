@@ -904,7 +904,12 @@
          }).showToast()
       );
    });
-document.querySelector(".branding").setAttribute("style", "display: none");
+const brandingElement = document.querySelector(".branding");
+        if (brandingElement) {
+            brandingElement.setAttribute("style", "display: none");
+        } else {
+            console.error("Element with class '.branding' not found.");
+        }
 </script>
 
 </html>
