@@ -202,8 +202,7 @@
                   </p>
                </div>
                <div class="col-lg-4 col-md-10">
-                  <form id="contact-form" action="https://formspree.io/f/maqyogjk" class="fs-form" target="_top"
-                     method="POST">
+                  <form id="contact-form">
                      <div class="form-floating mb-3">
                         <input type="text" required
                            class="form-control rounded-0 border-top-0 border-start-0 border-end-0 px-3 bg-transparent shadow-none text-warning"
@@ -925,5 +924,32 @@ const brandingElement = document.querySelector(".branding");
             console.error("Element with class '.branding' not found.");
         }
 </script> -->
+
+<script>
+document.getElementById("contactForm").addEventListener("submit", function(e) {
+  e.preventDefault(); // منع التحويل لصفحة تانية
+
+  const formData = new FormData(this);
+
+  fetch("https://formspree.io/f/maqyogjk", {
+    method: "POST",
+    body: formData,
+    headers: { 'Accept': 'application/json' }
+  })
+  .then(response => {
+    if (response.ok) {
+      document.getElementById("status").innerHTML = "✅ تم الإرسال بنجاح!";
+      this.reset();
+    } else {
+      document.getElementById("status").innerHTML = "❌ حدث خطأ أثناء الإرسال.";
+    }
+  })
+  .catch(error => {
+    document.getElementById("status").innerHTML = "⚠️ مشكلة في الاتصال.";
+  });
+});
+</script>
+
+
 
 </html>
