@@ -19,12 +19,17 @@
    <title>Abdullah | E-Learning</title>
    <link rel="icon" type="image/x-icon" href="./assets/img/favicon.ico">
    <!-- Google Tag Manager -->
-   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-   })(window,document,'script','dataLayer','GTM-MR2W6Z73');</script>
+   <script>(function (w, d, s, l, i) {
+         w[l] = w[l] || []; w[l].push({
+            'gtm.start':
+               new Date().getTime(), event: 'gtm.js'
+         }); var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+               'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+      })(window, document, 'script', 'dataLayer', 'GTM-MR2W6Z73');</script>
    <!-- End Google Tag Manager -->
+
+   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 
 <body>
@@ -72,8 +77,7 @@
                   </span>
                   <a class="text-decoration-none text-white hover-target" data-sharer="facebook"
                      data-title="You can view this Portfolio I recommend this elearning developer to you"
-                     data-hashtag="E_Learning"
-                     data-url="https://abdullah-e-learning-developer.pages.dev/">
+                     data-hashtag="E_Learning" data-url="https://abdullah-e-learning-developer.pages.dev/">
                      <i class="fa-brands fa-facebook-f fa-xl"></i>
                   </a>
                   <span class="position-relative d-flex mx-3 justify-content-center">
@@ -158,8 +162,7 @@
                   <a href="https://www.facebook.com/abdullah.mohammed93/" target="_blank" class="hover-target">
                      <i class="fa-brands fa-facebook-f fa-xl"></i>
                   </a>
-                  <a href="https://www.linkedin.com/in/abdullah-mohamed07/"
-                     target="_blank" class="hover-target">
+                  <a href="https://www.linkedin.com/in/abdullah-mohamed07/" target="_blank" class="hover-target">
                      <i class="fa-brands fa-linkedin-in fa-xl"></i>
                   </a>
                   <a href="https://github.com/abdullah0707" target="_blank" class="hover-target">
@@ -172,10 +175,8 @@
                      <i class="fa-brands fa-whatsapp fa-xl"></i>
                   </a>
                   <a href="mailto:abdullahelgammal25@gmail.com" target="_blank" class="hover-target" data-sharer="email"
-                  data-subject="E-Learning Developer"
-                     data-title="Hello,Abdullah Can we communicate for Work details"
-                     data-to="abdullahelgammal25@gmail.com"
-                     data-url="https://abdullah-e-learning-developer.pages.dev/">
+                     data-subject="E-Learning Developer" data-title="Hello,Abdullah Can we communicate for Work details"
+                     data-to="abdullahelgammal25@gmail.com" data-url="https://abdullah-e-learning-developer.pages.dev/">
                      <i class="fa-regular fa-envelope fa-xl"></i>
                   </a>
                   <a href="tel:+201100547732" class="hover-target">
@@ -201,11 +202,12 @@
                   </p>
                </div>
                <div class="col-lg-4 col-md-10">
-                  <form action="sandEmail()" method="post" id="sandEmailMessag">
+                  <form id="contact-form" action="https://formspree.io/f/maqyogjk" class="fs-form" target="_top"
+                     method="POST">
                      <div class="form-floating mb-3">
                         <input type="text" required
                            class="form-control rounded-0 border-top-0 border-start-0 border-end-0 px-3 bg-transparent shadow-none text-warning"
-                           id="name" placeholder="name@example.com">
+                           id="name" name="name" placeholder="name@example.com">
                         <label for="name" class="d-flex align-items-center gap-2 bg-transparent text-white mb-2">
                            <i class="fa-regular fa-user fa-lg"></i>
                            <span class="pt-2">
@@ -215,7 +217,7 @@
                         </label>
                      </div>
                      <div class="form-floating mb-3">
-                        <input type="email" required
+                        <input type="email" name="email" required
                            class="form-control rounded-0 border-top-0 border-start-0 border-end-0 px-3 bg-transparent shadow-none text-warning"
                            id="email" placeholder="name@example.com">
                         <label for="email" class="d-flex align-items-center gap-2 bg-transparent text-white mb-2">
@@ -229,8 +231,8 @@
                      <div class="form-floating mb-3">
                         <input type="number" required
                            class="form-control rounded-0 border-top-0 border-start-0 border-end-0 px-3 bg-transparent shadow-none text-warning"
-                           id="phone" placeholder="name@example.com">
-                        <label for="phone" class="d-flex align-items-center gap-2 bg-transparent text-white mb-2">
+                           id="number" name="number" placeholder="your phone number">
+                        <label for="number" class="d-flex align-items-center gap-2 bg-transparent text-white mb-2">
                            <i class="fa-solid fa-mobile-screen-button fa-lg"></i>
                            <span class="pt-2">
                               Phone Number
@@ -238,7 +240,7 @@
                            </span>
                         </label>
                      </div>
-                     <div class="form-floating mb-3">
+                     <!-- <div class="form-floating mb-3">
                         <input type="text" required
                            class="form-control rounded-0 border-top-0 border-start-0 border-end-0 px-3 bg-transparent shadow-none text-warning"
                            id="subject" placeholder="name@example.com">
@@ -249,11 +251,12 @@
                               <b class="text-danger mx-1">*</b>
                            </span>
                         </label>
-                     </div>
+                     </div> -->
                      <div class="form-floating mb-3">
                         <textarea
                            class="form-control rounded-0 border-top-0 border-start-0 border-end-0 px-3 bg-transparent shadow-none text-warning"
-                           required placeholder="Leave a comment here" id="message" style="height: 100px;"></textarea>
+                           required placeholder="Leave a comment here" id="message" name="message"
+                           style="height: 100px;"></textarea>
                         <label for="message" class="d-flex align-items-center gap-2 bg-transparent text-white">
                            <i class="fa-regular fa-message fa-lg mb-4"></i>
                            <span class="pb-4">
@@ -262,7 +265,7 @@
                            </span>
                         </label>
                      </div>
-                     <button type="submit"
+                     <button type="submit" value="Send"
                         class="btn rounded-0 border-top-0 border-start-0 border-end-0 border-bottom px-3 bg-transparent shadow-none text-warning text-uppercase fw-medium w-100 mt-4"
                         id="liveToastBtn">
                         <i class="fa-regular fa-paper-plane fa-lg mx-1 heartbeat"></i>
@@ -858,10 +861,10 @@
    <div class='cursor' id="cursor"></div>
    <div class='cursor2' id="cursor2"></div>
    <div class='cursor3' id="cursor3"></div>
-<script defer src="https://static.getbutton.io/widget/bundle.js?id=xpxAT"></script>
+   <script defer src="https://static.getbutton.io/widget/bundle.js?id=xpxAT"></script>
    <!-- Google Tag Manager (noscript) -->
-   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MR2W6Z73"
-   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MR2W6Z73" height="0" width="0"
+         style="display:none;visibility:hidden"></iframe></noscript>
    <!-- End Google Tag Manager (noscript) -->
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -871,11 +874,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.2/sharer.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="https://smtpjs.com/v3/smtp.js"></script>
+<!-- <script src="https://smtpjs.com/v3/smtp.js"></script> -->
 <script src="assets/js/animet.js"></script>
 <script src="assets/js/jQuery.js"></script>
 <script src="assets/js/code.js"></script>
-<script>
+<!-- <script>
    let sandEmailMessag = document.getElementById("sandEmailMessag");
    sandEmailMessag.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -921,6 +924,6 @@ const brandingElement = document.querySelector(".branding");
         } else {
             console.error("Element with class '.branding' not found.");
         }
-</script>
+</script> -->
 
 </html>
