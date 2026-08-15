@@ -30,19 +30,14 @@
       })
       .join("");
 
-    var actionHtml;
-    if (project.sample_id) {
+    var actionHtml = "";
+    if (project.sample_id || project.external_url) {
       actionHtml =
-        '<button type="button" class="button pulse-grow btn btn-danger preview-sample-btn" data-sample-id="' +
-        escapeHtml(project.sample_id) +
-        '" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Preview</button>';
-    } else if (project.external_url) {
-      actionHtml =
-        '<a rel="pulse-grow" href="' +
-        escapeHtml(project.external_url) +
-        '" target="_blank" class="button pulse-grow btn btn-danger" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Open Template</a>';
-    } else {
-      actionHtml = "";
+        '<button type="button" class="button pulse-grow btn btn-danger open-template-btn" data-sample-id="' +
+        escapeHtml(project.sample_id || "") +
+        '" data-external-url="' +
+        escapeHtml(project.external_url || "") +
+        '" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Open Template</button>';
     }
 
     col.innerHTML =
@@ -68,9 +63,13 @@
     projects.forEach(function (project) {
       grid.appendChild(buildCard(project));
     });
-    grid.querySelectorAll(".preview-sample-btn").forEach(function (btn) {
+    grid.querySelectorAll(".open-template-btn").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        openPreviewModal(btn.dataset.sampleId);
+        if (btn.dataset.sampleId) {
+          openTemplateModal({ type: "sample", sampleId: btn.dataset.sampleId });
+        } else if (btn.dataset.externalUrl) {
+          openTemplateModal({ type: "external", url: btn.dataset.externalUrl });
+        }
       });
     });
   }
@@ -119,7 +118,11 @@
     });
   }
 
-  // ---------------- Protected sample preview modal ----------------
+  // ---------------- Full-screen template modal ----------------
+  // Handles both kinds of project preview in one consistent in-portfolio popup:
+  //  - "sample": our own protected R2-hosted bundle, needs a signed preview token.
+  //  - "external": an already-public link (e.g. GitHub Pages), loaded directly —
+  //    no token needed, it's not confidential.
   var activeModal = null;
 
   function injectModalStyles() {
@@ -127,13 +130,23 @@
     var style = document.createElement("style");
     style.id = "preview-modal-styles";
     style.textContent =
-      ".preview-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;" +
+      ".preview-modal-overlay{position:fixed;inset:0;background:rgba(10,10,14,0.94);z-index:9999;" +
       "display:flex;align-items:center;justify-content:center;padding:2vh 2vw;}" +
-      ".preview-modal-box{position:relative;width:100%;height:100%;max-width:1400px;background:#000;" +
-      "border-radius:8px;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.6);}" +
+      ".preview-modal-box{position:relative;width:100%;height:100%;max-width:1500px;background:#000;" +
+      "border-radius:10px;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.6);}" +
       ".preview-modal-box iframe{width:100%;height:100%;border:0;display:block;}" +
-      ".preview-modal-close{position:absolute;top:10px;left:10px;z-index:2;background:#e5484d;color:#fff;" +
-      "border:none;border-radius:999px;width:36px;height:36px;font-size:1.1rem;cursor:pointer;}" +
+      /* Close button: mirrors the site's existing .wildlife-close / .about-close
+         language (top-right, 30x30, rotates 90deg on hover) so it reads as part
+         of the same portfolio, but drawn in CSS instead of an external icon file
+         so it always renders. */
+      ".preview-modal-close{position:absolute;top:14px;right:14px;z-index:3;width:34px;height:34px;" +
+      "border:none;border-radius:50%;background:rgba(255,255,255,0.08);cursor:pointer;" +
+      "transition:transform 200ms linear, background 150ms linear;}" +
+      ".preview-modal-close:hover{transform:rotate(90deg);background:rgba(255,182,72,0.85);}" +
+      ".preview-modal-close::before,.preview-modal-close::after{content:'';position:absolute;left:50%;top:50%;" +
+      "width:16px;height:2px;background:#fff;border-radius:2px;}" +
+      ".preview-modal-close::before{transform:translate(-50%,-50%) rotate(45deg);}" +
+      ".preview-modal-close::after{transform:translate(-50%,-50%) rotate(-45deg);}" +
       ".preview-modal-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;" +
       "color:#9aa1b1;font-family:sans-serif;}" +
       ".preview-modal-error{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;" +
@@ -143,17 +156,17 @@
     document.head.appendChild(style);
   }
 
-  function openPreviewModal(sampleId) {
+  function openTemplateModal(target) {
     injectModalStyles();
-    closePreviewModal();
+    closeTemplateModal();
 
     var overlay = document.createElement("div");
     overlay.className = "preview-modal-overlay";
     overlay.innerHTML =
       '<div class="preview-modal-box">' +
-      '<button type="button" class="preview-modal-close" aria-label="Close">✕</button>' +
+      '<button type="button" class="preview-modal-close" aria-label="Close"></button>' +
       '<div class="preview-modal-loading">جاري التحميل...</div>' +
-      '<div class="preview-modal-watermark">Abdullah Portfolio — Preview</div>' +
+      (target.type === "sample" ? '<div class="preview-modal-watermark">Abdullah Portfolio — Preview</div>' : "") +
       "</div>";
     document.body.appendChild(overlay);
     activeModal = overlay;
@@ -161,12 +174,37 @@
     overlay.addEventListener("contextmenu", function (e) {
       e.preventDefault();
     });
-    overlay.querySelector(".preview-modal-close").addEventListener("click", closePreviewModal);
+    overlay.querySelector(".preview-modal-close").addEventListener("click", closeTemplateModal);
     overlay.addEventListener("click", function (e) {
-      if (e.target === overlay) closePreviewModal();
+      if (e.target === overlay) closeTemplateModal();
     });
 
-    fetch(API_BASE + "/api/preview-token/" + encodeURIComponent(sampleId), {
+    function mountIframe(src) {
+      if (activeModal !== overlay) return; // closed before ready
+      var box = overlay.querySelector(".preview-modal-box");
+      var loading = overlay.querySelector(".preview-modal-loading");
+      if (loading) loading.remove();
+      var iframe = document.createElement("iframe");
+      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+      iframe.src = src;
+      box.insertBefore(iframe, box.firstChild.nextSibling);
+    }
+
+    function showError() {
+      if (activeModal !== overlay) return;
+      var loading = overlay.querySelector(".preview-modal-loading");
+      if (loading) {
+        loading.className = "preview-modal-error";
+        loading.textContent = "معذرة، مفيش وصول للمعاينة دلوقتي. جرب تاني بعد شوية.";
+      }
+    }
+
+    if (target.type === "external") {
+      mountIframe(target.url);
+      return;
+    }
+
+    fetch(API_BASE + "/api/preview-token/" + encodeURIComponent(target.sampleId), {
       method: "POST",
       credentials: "include",
     })
@@ -175,26 +213,12 @@
         return res.json();
       })
       .then(function (data) {
-        if (activeModal !== overlay) return; // closed before token arrived
-        var box = overlay.querySelector(".preview-modal-box");
-        var loading = overlay.querySelector(".preview-modal-loading");
-        if (loading) loading.remove();
-        var iframe = document.createElement("iframe");
-        iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
-        iframe.src = API_BASE + "/preview/" + encodeURIComponent(sampleId) + "/" + data.entryFile;
-        box.insertBefore(iframe, box.firstChild.nextSibling);
+        mountIframe(API_BASE + "/preview/" + encodeURIComponent(target.sampleId) + "/" + data.entryFile);
       })
-      .catch(function () {
-        if (activeModal !== overlay) return;
-        var loading = overlay.querySelector(".preview-modal-loading");
-        if (loading) {
-          loading.className = "preview-modal-error";
-          loading.textContent = "معذرة، مفيش وصول للمعاينة دلوقتي. جرب تاني بعد شوية.";
-        }
-      });
+      .catch(showError);
   }
 
-  function closePreviewModal() {
+  function closeTemplateModal() {
     if (activeModal) {
       activeModal.remove();
       activeModal = null;
@@ -202,6 +226,6 @@
   }
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closePreviewModal();
+    if (e.key === "Escape") closeTemplateModal();
   });
 })();
