@@ -140,9 +140,9 @@
          of the same portfolio, but drawn in CSS instead of an external icon file
          so it always renders. */
       ".preview-modal-close{position:absolute;top:14px;right:14px;z-index:3;width:34px;height:34px;" +
-      "border:none;border-radius:50%;background:rgba(255,255,255,0.08);cursor:pointer;" +
-      "transition:transform 200ms linear, background 150ms linear;}" +
-      ".preview-modal-close:hover{transform:rotate(90deg);background:rgba(255,182,72,0.85);}" +
+      "border:2px solid rgba(255,255,255,0.9);border-radius:50%;background:#dc3545;cursor:pointer;" +
+      "box-shadow:0 2px 10px rgba(0,0,0,0.5);transition:transform 200ms linear, background 150ms linear;}" +
+      ".preview-modal-close:hover{transform:rotate(90deg);background:#ffb648;}" +
       ".preview-modal-close::before,.preview-modal-close::after{content:'';position:absolute;left:50%;top:50%;" +
       "width:16px;height:2px;background:#fff;border-radius:2px;}" +
       ".preview-modal-close::before{transform:translate(-50%,-50%) rotate(45deg);}" +
