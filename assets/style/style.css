@@ -1,8 +1,12 @@
-@import url("ttps://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
+@import url("https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
 @import url("https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap");
 
+:root {
+  --site-font: "Poppins";
+}
+
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: var(--site-font), sans-serif;
   font-weight: 300;
   font-size: 15px;
   line-height: 1.6;
@@ -578,7 +582,7 @@ body.nature-on .nature-section {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(calc(-250px * 24));
+    transform: translateX(var(--marquee-scroll-distance, calc(-250px * 24)));
   }
 }
 .slider {
@@ -613,10 +617,10 @@ body.nature-on .nature-section {
   top: 0;
 }
 .slider .slide-track {
-  -webkit-animation: scroll 110s linear infinite;
-  animation: scroll 110s linear infinite;
+  -webkit-animation: scroll var(--marquee-duration, 110s) linear infinite;
+  animation: scroll var(--marquee-duration, 110s) linear infinite;
   display: flex;
-  width: calc(250px * 48);
+  width: var(--marquee-track-width, calc(250px * 48));
 }
 .slider .slide {
   height: 100px;

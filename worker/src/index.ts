@@ -8,6 +8,8 @@ import { presignUploads } from "./routes/uploads";
 import { finalizeSample, deleteSample } from "./routes/samples";
 import { mintPreviewToken, servePreviewFile } from "./routes/preview";
 import { serveMedia } from "./routes/media";
+import { getSiteSettings, updateSiteSettings } from "./routes/site";
+import { listPublicPartners, listAdminPartners, createPartner, updatePartner, deletePartner } from "./routes/partners";
 
 // Exact origin of the public portfolio site. Kept as a constant (not a secret) because
 // it must be echoed back verbatim in Access-Control-Allow-Origin for credentialed CORS
@@ -55,6 +57,14 @@ export default {
       return withCors(await listPublicProjects(env), req, false);
     }
 
+    if (pathname === "/api/site" && req.method === "GET") {
+      return withCors(await getSiteSettings(env), req, false);
+    }
+
+    if (pathname === "/api/partners" && req.method === "GET") {
+      return withCors(await listPublicPartners(env), req, false);
+    }
+
     const previewTokenMatch = pathname.match(/^\/api\/preview-token\/([a-zA-Z0-9-]+)$/);
     if (previewTokenMatch && req.method === "POST") {
       return withCors(await mintPreviewToken(req, env, previewTokenMatch[1]), req, true);
@@ -99,6 +109,15 @@ export default {
       if (pathname === "/admin/api/samples" && req.method === "POST") return finalizeSample(req, env);
       const sampleMatch = pathname.match(/^\/admin\/api\/samples\/([a-zA-Z0-9-]+)$/);
       if (sampleMatch && req.method === "DELETE") return deleteSample(env, sampleMatch[1]);
+
+      if (pathname === "/admin/api/site" && req.method === "GET") return getSiteSettings(env);
+      if (pathname === "/admin/api/site" && req.method === "PUT") return updateSiteSettings(req, env);
+
+      if (pathname === "/admin/api/partners" && req.method === "GET") return listAdminPartners(env);
+      if (pathname === "/admin/api/partners" && req.method === "POST") return createPartner(req, env);
+      const partnerMatch = pathname.match(/^\/admin\/api\/partners\/(\d+)$/);
+      if (partnerMatch && req.method === "PUT") return updatePartner(req, env, partnerMatch[1]);
+      if (partnerMatch && req.method === "DELETE") return deletePartner(env, partnerMatch[1]);
 
       return json({ error: "Not found" }, 404);
     }

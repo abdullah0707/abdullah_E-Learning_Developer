@@ -59,10 +59,10 @@
          <div class="container-fluid">
             <div class="row justify-content-center">
                <div class="col-12 text-center">
-                  <h1>ABDULLAH MOHAMED</h1>
+                  <h1 id="hero-title">ABDULLAH MOHAMED</h1>
                </div>
                <div class="col-12 text-center">
-                  <div class="dancing">E-Learning Developer</div>
+                  <div class="dancing" id="hero-tagline">E-Learning Developer</div>
                </div>
                <div class="col-12 text-center mt-4">
                   <p class="text-uppercase fw-light">Share</p>
@@ -123,7 +123,7 @@
             </div>
          </div>
       </div>
-      <div class="shadow-title">Welcome to Portfolio</div>
+      <div class="shadow-title" id="hero-welcome">Welcome to Portfolio</div>
    </div>
 
    <div class="about-section">
@@ -132,13 +132,13 @@
          <div class="container">
             <div class="row justify-content-center">
                <div class="col-12 text-center">
-                  <img src="./assets/img/logo.webp" loading="lazy" decoding="async" alt="">
+                  <img id="about-photo" src="./assets/img/logo.webp" loading="lazy" decoding="async" alt="">
                </div>
                <!-- <div class="col-12 text-center">
                   <p><span>Christian Arete</span></p>
                </div> -->
                <div class="col-lg-7 text-center mt-4 fw-semibold fs-6">
-                  <p>
+                  <p id="about-bio-text">
                      Driven by a passion for creating transformative online learning experiences,
                      I specialize as an eLearning developer in
                      crafting engaging and effective solutions tailored to the unique needs of each client. With
@@ -150,7 +150,7 @@
                   </p>
                   <div class="d-flex justify-content-between slide-in-bottom">
                      <p>
-                        <a class="underlined underlined--right fs-6 text-warning" target="_blank"
+                        <a id="cv-link" class="underlined underlined--right fs-6 text-warning" target="_blank"
                            href="https://drive.google.com/file/d/1i620_3hJdGkjr4JcmnChuLXxuGpPS5Pu/view?usp=sharing">
                            Download latest CV
                         </a>
@@ -163,27 +163,27 @@
                   </div>
                </div>
                <div class="col-12 text-center social mt-4">
-                  <a href="https://www.facebook.com/abdullah.mohammed93/" target="_blank" class="hover-target">
+                  <a id="social-facebook" href="https://www.facebook.com/abdullah.mohammed93/" target="_blank" class="hover-target">
                      <i class="fa-brands fa-facebook-f fa-xl"></i>
                   </a>
-                  <a href="https://www.linkedin.com/in/abdullah-mohamed07/" target="_blank" class="hover-target">
+                  <a id="social-linkedin" href="https://www.linkedin.com/in/abdullah-mohamed07/" target="_blank" class="hover-target">
                      <i class="fa-brands fa-linkedin-in fa-xl"></i>
                   </a>
-                  <a href="https://github.com/abdullah0707" target="_blank" class="hover-target">
+                  <a id="social-github" href="https://github.com/abdullah0707" target="_blank" class="hover-target">
                      <i class="fa-brands fa-github fa-xl"></i>
                   </a>
-                  <a target="_blank" class="hover-target" data-sharer="whatsapp"
+                  <a id="social-whatsapp" target="_blank" class="hover-target" data-sharer="whatsapp"
                      data-title="Hello,Abdullah Can we communicate for Work details"
                      data-hashtags="Developer,E_Learning,Development,Elearning,Storyline,Articulate"
                      data-to="+201094242767">
                      <i class="fa-brands fa-whatsapp fa-xl"></i>
                   </a>
-                  <a href="mailto:abdullahelgammal25@gmail.com" target="_blank" class="hover-target" data-sharer="email"
+                  <a id="social-email" href="mailto:abdullahelgammal25@gmail.com" target="_blank" class="hover-target" data-sharer="email"
                      data-subject="E-Learning Developer" data-title="Hello,Abdullah Can we communicate for Work details"
                      data-to="abdullahelgammal25@gmail.com" data-url="https://abdullah-e-learning-developer.pages.dev/">
                      <i class="fa-regular fa-envelope fa-xl"></i>
                   </a>
-                  <a href="tel:+201100547732" class="hover-target">
+                  <a id="social-phone" href="tel:+201100547732" class="hover-target">
                      <i class="fa-solid fa-phone fa-xl"></i>
                   </a>
                </div>
@@ -882,6 +882,7 @@
 <script src="assets/js/jQuery.js"></script>
 <script src="assets/js/code.js"></script>
 <script src="assets/js/projects-loader.js"></script>
+<script src="assets/js/site-loader.js"></script>
 <!-- <script>
    let sandEmailMessag = document.getElementById("sandEmailMessag");
    sandEmailMessag.addEventListener("submit", (e) => {
