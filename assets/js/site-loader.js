@@ -92,8 +92,17 @@
     track.innerHTML = doubled
       .map(function (p) {
         var img = p.logo_url ? API_BASE + p.logo_url : "";
+        // object-fit:contain on an explicitly full-size box keeps every logo fully
+        // inside its 250x100 slot regardless of its own aspect ratio (wide, tall,
+        // or square) — no per-logo tuning needed, so newly-added logos never
+        // overflow into their neighbours' slots the way the old fixed Bootstrap
+        // sizing classes required per image.
         var content =
-          '<img class="object-fit-cover mh-100 px-3" src="' + escapeHtml(img) + '" alt="' + escapeHtml(p.name || "") + '" />';
+          '<img src="' +
+          escapeHtml(img) +
+          '" alt="' +
+          escapeHtml(p.name || "") +
+          '" style="width:100%;height:100%;object-fit:contain;padding:0 0.75rem;box-sizing:border-box;" />';
         if (p.link_url) {
           content = '<a href="' + escapeHtml(p.link_url) + '" target="_blank" rel="noopener">' + content + "</a>";
         }
