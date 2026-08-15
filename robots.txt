@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://abdullah-e-learning-developer.pages.dev/sitemap.xml

@@ -59,7 +59,10 @@
 
     if (settings.social_whatsapp_number) {
       var wa = document.getElementById("social-whatsapp");
-      if (wa) wa.setAttribute("data-to", settings.social_whatsapp_number);
+      if (wa) {
+        wa.setAttribute("data-to", settings.social_whatsapp_number);
+        wa.setAttribute("href", "https://wa.me/" + settings.social_whatsapp_number.replace(/[^0-9]/g, ""));
+      }
     }
     if (settings.social_email) {
       var mail = document.getElementById("social-email");
@@ -115,6 +118,19 @@
     root.setProperty("--marquee-track-width", "calc(250px * " + n * 2 + ")");
     root.setProperty("--marquee-scroll-distance", "calc(-250px * " + n + ")");
     root.setProperty("--marquee-duration", Math.max(20, Math.round((110 * n) / 24)) + "s");
+  }
+
+  // The share buttons have a real href now (SEO crawlability + no-JS fallback),
+  // but sharer.js opens its own popup via window.open() without calling
+  // preventDefault(). Without this, a click would both open that popup AND
+  // navigate/open-a-tab via the href. Suppress the href navigation whenever
+  // sharer.js is actually present and handling the click.
+  if (window.Sharer) {
+    document.querySelectorAll("[data-sharer]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        e.preventDefault();
+      });
+    });
   }
 
   Promise.all([
