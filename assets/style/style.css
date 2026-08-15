@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Exo:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
@@ -170,7 +170,7 @@ a:hover {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 30px 30px;
-  background-image: url("http://www.ivang-design.com/svg-load/portfolio/down.svg");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%2F%3E%3C%2Fsvg%3E");
   opacity: 0.2;
   -webkit-transition: all 200ms linear;
   transition: all 200ms linear;
@@ -234,7 +234,7 @@ body.nature-on .hero-section {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 30px 30px;
-  background-image: url("http://www.ivang-design.com/svg-load/portfolio/left.svg");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2215%206%209%2012%2015%2018%22%2F%3E%3C%2Fsvg%3E");
   opacity: 0.2;
   -webkit-transition: all 200ms linear;
   transition: all 200ms linear;
@@ -275,7 +275,7 @@ body.about-on .about-section {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 36px 36px;
-  background-image: url("http://www.ivang-design.com/svg-load/portfolio/close.svg");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Cline%20x1%3D%224%22%20y1%3D%224%22%20x2%3D%2220%22%20y2%3D%2220%22%2F%3E%3Cline%20x1%3D%2220%22%20y1%3D%224%22%20x2%3D%224%22%20y2%3D%2220%22%2F%3E%3C%2Fsvg%3E");
   cursor: pointer;
   z-index: 11;
 }
@@ -335,7 +335,7 @@ body.about-on .about-section {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 30px 30px;
-  background-image: url("http://www.ivang-design.com/svg-load/portfolio/left.svg");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2215%206%209%2012%2015%2018%22%2F%3E%3C%2Fsvg%3E");
   opacity: 0.2;
   -webkit-transition: all 200ms linear;
   transition: all 200ms linear;
@@ -376,7 +376,7 @@ body.contact-on .contact-section {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 36px 36px;
-  background-image: url("http://www.ivang-design.com/svg-load/portfolio/close.svg");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Cline%20x1%3D%224%22%20y1%3D%224%22%20x2%3D%2220%22%20y2%3D%2220%22%2F%3E%3Cline%20x1%3D%2220%22%20y1%3D%224%22%20x2%3D%224%22%20y2%3D%2220%22%2F%3E%3C%2Fsvg%3E");
   cursor: pointer;
   z-index: 11;
 }
@@ -445,7 +445,7 @@ body.contact-on .contact-section {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 36px 36px;
-  background-image: url("http://www.ivang-design.com/svg-load/portfolio/close.svg");
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22white%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Cline%20x1%3D%224%22%20y1%3D%224%22%20x2%3D%2220%22%20y2%3D%2220%22%2F%3E%3Cline%20x1%3D%2220%22%20y1%3D%224%22%20x2%3D%224%22%20y2%3D%2220%22%2F%3E%3C%2Fsvg%3E");
   cursor: pointer;
   z-index: 11;
 }
@@ -656,6 +656,17 @@ body.nature-on .nature-section {
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: alternate;
+}
+
+/* Project card thumbnails: the img has no CSS width, so on cards missing the
+   Bootstrap img-fluid class it renders at its full natural width (960px) and
+   overflows the ~350-450px column — Bootstrap's .card doesn't clip children by
+   default. Constraining width explicitly here (instead of relying on
+   img-fluid per image) fixes that overflow and the aspect-ratio distortion
+   consistently for every card, static or dashboard-added. */
+#projects-row .card > img {
+  width: 100%;
+  object-fit: cover;
 }
 
 .card-img-overlay {
