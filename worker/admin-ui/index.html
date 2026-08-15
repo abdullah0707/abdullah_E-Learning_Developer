@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>لوحة تحكم البورتفوليو</title>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <section id="login-screen" class="hidden">
+    <form class="login-card" id="login-form">
+      <h1>تسجيل الدخول</h1>
+      <label for="login-password">كلمة المرور</label>
+      <input type="password" id="login-password" required autocomplete="current-password" />
+      <div class="error-msg" id="login-error"></div>
+      <button type="submit" class="btn" style="width:100%; margin-top:0.75rem;">دخول</button>
+    </form>
+  </section>
+
+  <section id="app-screen" class="hidden">
+    <nav class="sidebar">
+      <div class="brand">لوحة التحكم</div>
+      <button class="nav-link active" data-page="projects">المشاريع</button>
+      <button class="nav-link" data-page="tags">التاجات</button>
+      <button class="nav-link" id="logout-btn" style="margin-top:2rem; color:var(--danger)">خروج</button>
+    </nav>
+    <main>
+      <div id="page-projects"></div>
+      <div id="page-tags" class="hidden"></div>
+    </main>
+  </section>
+
+  <div id="modal-root"></div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>
