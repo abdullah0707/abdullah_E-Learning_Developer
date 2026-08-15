@@ -1,7 +1,11 @@
 import type { Env } from "../env.d";
 
+const ALLOWED_MEDIA_PREFIXES = ["thumbnails/", "partners/", "site/"];
+
 export async function serveMedia(env: Env, key: string): Promise<Response> {
-  if (!key.startsWith("thumbnails/")) return new Response("Not found", { status: 404 });
+  if (!ALLOWED_MEDIA_PREFIXES.some((prefix) => key.startsWith(prefix))) {
+    return new Response("Not found", { status: 404 });
+  }
   const object = await env.SAMPLES_BUCKET.get(key);
   if (!object) return new Response("Not found", { status: 404 });
   return new Response(object.body, {

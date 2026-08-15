@@ -82,6 +82,8 @@ document.querySelectorAll("nav.sidebar .nav-link[data-page]").forEach((btn) => {
     document.querySelectorAll("main > div").forEach((p) => p.classList.add("hidden"));
     document.getElementById(`page-${btn.dataset.page}`).classList.remove("hidden");
     if (btn.dataset.page === "tags") loadTagsPage();
+    if (btn.dataset.page === "partners") loadPartnersPage();
+    if (btn.dataset.page === "settings") loadSettingsPage();
   });
 });
 
@@ -381,6 +383,185 @@ async function loadTagsPage() {
       await loadTagsPage();
     }),
   );
+}
+
+// ---------------- Partners (logo strip) page ----------------
+const FONT_OPTIONS = [
+  { value: "poppins", label: "Poppins (الحالي)" },
+  { value: "inter", label: "Inter" },
+  { value: "montserrat", label: "Montserrat" },
+  { value: "roboto", label: "Roboto" },
+  { value: "cairo", label: "Cairo (يدعم العربي)" },
+  { value: "tajawal", label: "Tajawal (يدعم العربي)" },
+];
+
+async function loadPartnersPage() {
+  const { partners } = await api("/admin/api/partners");
+  state.partners = partners;
+  const root = document.getElementById("page-partners");
+  root.innerHTML = `
+    <h2>لوجوهات الشركاء (الشريط الأبيض)</h2>
+    <div class="upload-zone" style="max-width:400px; text-align:right;">
+      <label>إضافة لوجو جديد</label>
+      <input type="file" id="new-partner-logo" accept="image/*" />
+      <input id="new-partner-name" placeholder="اسم الشريك (اختياري)" style="margin-top:0.5rem;" />
+      <input id="new-partner-link" placeholder="رابط عند الضغط (اختياري)" style="margin-top:0.5rem;" />
+      <button class="btn" id="add-partner-btn" style="margin-top:0.6rem;">إضافة</button>
+      <div class="error-msg" id="partner-add-status"></div>
+    </div>
+    <div id="partners-list" style="margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:0.75rem;"></div>
+  `;
+
+  const list = document.getElementById("partners-list");
+  partners.forEach((p) => {
+    const card = document.createElement("div");
+    card.style.cssText =
+      "background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:0.75rem;width:160px;text-align:center;";
+    card.innerHTML = `
+      <img src="${p.logo_url || ""}" style="width:100%; height:60px; object-fit:contain; background:#fff; border-radius:6px;" alt="">
+      <div style="font-size:0.8rem; margin-top:0.4rem; color:var(--text-dim);">${escapeHtml(p.name || "بدون اسم")}</div>
+      <button class="btn danger" data-id="${p.id}" style="width:100%; margin-top:0.5rem; padding:0.3rem;">حذف</button>
+    `;
+    card.querySelector("button").addEventListener("click", async () => {
+      if (!confirm("حذف اللوجو ده؟")) return;
+      await api(`/admin/api/partners/${p.id}`, { method: "DELETE" });
+      await loadPartnersPage();
+    });
+    list.appendChild(card);
+  });
+
+  document.getElementById("add-partner-btn").addEventListener("click", async () => {
+    const fileInput = document.getElementById("new-partner-logo");
+    const file = fileInput.files[0];
+    const statusEl = document.getElementById("partner-add-status");
+    if (!file) {
+      statusEl.textContent = "اختار صورة اللوجو الأول.";
+      return;
+    }
+    statusEl.className = "error-msg";
+    statusEl.textContent = "جاري الرفع...";
+    try {
+      const { uploads } = await api("/admin/api/uploads/presign", {
+        method: "POST",
+        body: JSON.stringify({ kind: "partner-logo", files: [{ path: file.name, size: file.size, contentType: guessContentType(file) }] }),
+      });
+      const upload = uploads[0];
+      await fetch(upload.url, { method: "PUT", headers: { "Content-Type": guessContentType(file) }, body: file });
+      await api("/admin/api/partners", {
+        method: "POST",
+        body: JSON.stringify({
+          logo_r2_key: upload.key,
+          name: document.getElementById("new-partner-name").value.trim() || null,
+          link_url: document.getElementById("new-partner-link").value.trim() || null,
+        }),
+      });
+      await loadPartnersPage();
+    } catch (err) {
+      statusEl.textContent = "فشل الإضافة: " + err.message;
+    }
+  });
+}
+
+// ---------------- Site settings page ----------------
+async function loadSettingsPage() {
+  const { settings } = await api("/admin/api/site");
+  const root = document.getElementById("page-settings");
+  const v = (key) => escapeHtml(settings[key] || "");
+
+  root.innerHTML = `
+    <h2>إعدادات الموقع</h2>
+
+    <h3 style="font-size:1rem; color:var(--text-dim); margin-top:1.5rem;">الشاشة الرئيسية (Home)</h3>
+    <label>الاسم / العنوان الرئيسي</label>
+    <input id="s-hero-title" value="${v("hero_title")}" />
+    <label>الوصف تحت الاسم</label>
+    <input id="s-hero-tagline" value="${v("hero_tagline")}" />
+    <label>نص الترحيب</label>
+    <input id="s-hero-welcome" value="${v("hero_welcome_text")}" />
+
+    <h3 style="font-size:1rem; color:var(--text-dim); margin-top:1.5rem;">قسم About</h3>
+    <label>صورة About</label>
+    <input type="file" id="s-about-photo" accept="image/*" />
+    <div class="error-msg" id="about-photo-status"></div>
+    <label>النبذة التعريفية</label>
+    <textarea id="s-about-bio" rows="4">${v("about_bio")}</textarea>
+    <label>رابط تحميل الـ CV</label>
+    <input id="s-cv-url" value="${v("cv_url")}" />
+
+    <h3 style="font-size:1rem; color:var(--text-dim); margin-top:1.5rem;">روابط التواصل</h3>
+    <div class="row">
+      <div><label>Facebook</label><input id="s-facebook" value="${v("social_facebook")}" /></div>
+      <div><label>LinkedIn</label><input id="s-linkedin" value="${v("social_linkedin")}" /></div>
+    </div>
+    <div class="row">
+      <div><label>GitHub</label><input id="s-github" value="${v("social_github")}" /></div>
+      <div><label>WhatsApp (رقم بالكود الدولي)</label><input id="s-whatsapp" value="${v("social_whatsapp_number")}" /></div>
+    </div>
+    <div class="row">
+      <div><label>Email</label><input id="s-email" value="${v("social_email")}" /></div>
+      <div><label>Phone</label><input id="s-phone" value="${v("social_phone")}" /></div>
+    </div>
+
+    <h3 style="font-size:1rem; color:var(--text-dim); margin-top:1.5rem;">الخط المستخدم في الموقع</h3>
+    <select id="s-font">
+      ${FONT_OPTIONS.map((f) => `<option value="${f.value}" ${settings.font_choice === f.value ? "selected" : ""}>${f.label}</option>`).join("")}
+    </select>
+
+    <div class="error-msg" id="settings-error"></div>
+    <div class="ok-msg" id="settings-ok"></div>
+    <button class="btn" id="save-settings-btn" style="margin-top:1.25rem;">حفظ الإعدادات</button>
+  `;
+
+  let pendingAboutPhotoKey = settings.about_photo_r2_key || null;
+
+  document.getElementById("s-about-photo").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const statusEl = document.getElementById("about-photo-status");
+    statusEl.className = "error-msg";
+    statusEl.textContent = "جاري الرفع...";
+    try {
+      const { uploads } = await api("/admin/api/uploads/presign", {
+        method: "POST",
+        body: JSON.stringify({ kind: "about-photo", files: [{ path: file.name, size: file.size, contentType: guessContentType(file) }] }),
+      });
+      const upload = uploads[0];
+      await fetch(upload.url, { method: "PUT", headers: { "Content-Type": guessContentType(file) }, body: file });
+      pendingAboutPhotoKey = upload.key;
+      statusEl.textContent = "تم رفع الصورة ✓ (هتتحفظ لما تدوس حفظ الإعدادات)";
+      statusEl.className = "ok-msg";
+    } catch (err) {
+      statusEl.textContent = "فشل رفع الصورة: " + err.message;
+    }
+  });
+
+  document.getElementById("save-settings-btn").addEventListener("click", async () => {
+    const errorEl = document.getElementById("settings-error");
+    const okEl = document.getElementById("settings-ok");
+    errorEl.textContent = "";
+    okEl.textContent = "";
+    const payload = {
+      hero_title: document.getElementById("s-hero-title").value.trim(),
+      hero_tagline: document.getElementById("s-hero-tagline").value.trim(),
+      hero_welcome_text: document.getElementById("s-hero-welcome").value.trim(),
+      about_bio: document.getElementById("s-about-bio").value.trim(),
+      about_photo_r2_key: pendingAboutPhotoKey || "",
+      cv_url: document.getElementById("s-cv-url").value.trim(),
+      social_facebook: document.getElementById("s-facebook").value.trim(),
+      social_linkedin: document.getElementById("s-linkedin").value.trim(),
+      social_github: document.getElementById("s-github").value.trim(),
+      social_whatsapp_number: document.getElementById("s-whatsapp").value.trim(),
+      social_email: document.getElementById("s-email").value.trim(),
+      social_phone: document.getElementById("s-phone").value.trim(),
+      font_choice: document.getElementById("s-font").value,
+    };
+    try {
+      await api("/admin/api/site", { method: "PUT", body: JSON.stringify(payload) });
+      okEl.textContent = "اتحفظ بنجاح ✓";
+    } catch (err) {
+      errorEl.textContent = "فشل الحفظ: " + err.message;
+    }
+  });
 }
 
 boot();

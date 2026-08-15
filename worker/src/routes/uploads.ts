@@ -30,17 +30,24 @@ async function presignPut(env: Env, key: string, contentType: string): Promise<s
   return signed.url;
 }
 
+const SINGLE_FILE_PREFIXES: Record<string, string> = {
+  thumbnail: "thumbnails",
+  "partner-logo": "partners",
+  "about-photo": "site",
+};
+
 export async function presignUploads(req: Request, env: Env): Promise<Response> {
   const body = await req
-    .json<{ kind?: "sample" | "thumbnail"; sampleId?: string; files?: FileDescriptor[] }>()
+    .json<{ kind?: "sample" | keyof typeof SINGLE_FILE_PREFIXES; sampleId?: string; files?: FileDescriptor[] }>()
     .catch(() => null);
   if (!body?.files?.length) return json({ error: "files array is required" }, 400);
   if (body.files.length > MAX_FILES_PER_SAMPLE) return json({ error: "too many files" }, 400);
 
-  if (body.kind === "thumbnail") {
+  if (body.kind && body.kind in SINGLE_FILE_PREFIXES) {
+    const prefix = SINGLE_FILE_PREFIXES[body.kind];
     const file = body.files[0];
     const ext = (file.path.split(".").pop() || "bin").toLowerCase();
-    const key = `thumbnails/${crypto.randomUUID()}.${ext}`;
+    const key = `${prefix}/${crypto.randomUUID()}.${ext}`;
     const url = await presignPut(env, key, file.contentType || "application/octet-stream");
     return json({ uploads: [{ path: file.path, key, url }] });
   }
