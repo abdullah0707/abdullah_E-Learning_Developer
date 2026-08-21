@@ -4,6 +4,7 @@ export interface Env {
   ASSETS: Fetcher;
   LOGIN_LIMITER: RateLimit;
   PREVIEW_LIMITER: RateLimit;
+  TRACK_LIMITER: RateLimit;
 
   ADMIN_PASSWORD_HASH: string;
   SESSION_HMAC_SECRET: string;

@@ -10,6 +10,7 @@ import { mintPreviewToken, servePreviewFile } from "./routes/preview";
 import { serveMedia } from "./routes/media";
 import { getSiteSettings, updateSiteSettings } from "./routes/site";
 import { listPublicPartners, listAdminPartners, createPartner, updatePartner, deletePartner } from "./routes/partners";
+import { trackEvent, getAnalyticsSummary, getRecentEvents } from "./routes/analytics";
 
 // Exact origin of the public portfolio site. Kept as a constant (not a secret) because
 // it must be echoed back verbatim in Access-Control-Allow-Origin for credentialed CORS
@@ -65,6 +66,10 @@ export default {
       return withCors(await listPublicPartners(env), req, false);
     }
 
+    if (pathname === "/api/track" && req.method === "POST") {
+      return withCors(await trackEvent(req, env), req, false);
+    }
+
     const previewTokenMatch = pathname.match(/^\/api\/preview-token\/([a-zA-Z0-9-]+)$/);
     if (previewTokenMatch && req.method === "POST") {
       return withCors(await mintPreviewToken(req, env, previewTokenMatch[1]), req, true);
@@ -118,6 +123,15 @@ export default {
       const partnerMatch = pathname.match(/^\/admin\/api\/partners\/(\d+)$/);
       if (partnerMatch && req.method === "PUT") return updatePartner(req, env, partnerMatch[1]);
       if (partnerMatch && req.method === "DELETE") return deletePartner(env, partnerMatch[1]);
+
+      if (pathname === "/admin/api/analytics/summary") {
+        const days = Number(url.searchParams.get("days")) || 7;
+        return getAnalyticsSummary(env, days);
+      }
+      if (pathname === "/admin/api/analytics/recent") {
+        const limit = Number(url.searchParams.get("limit")) || 50;
+        return getRecentEvents(env, limit);
+      }
 
       return json({ error: "Not found" }, 404);
     }
