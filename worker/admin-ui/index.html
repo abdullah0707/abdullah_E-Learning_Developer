@@ -20,15 +20,17 @@
 
   <section id="app-screen" class="hidden">
     <nav class="sidebar">
-      <div class="brand">لوحة التحكم</div>
-      <button class="nav-link active" data-page="projects">المشاريع</button>
-      <button class="nav-link" data-page="tags">التاجات</button>
-      <button class="nav-link" data-page="partners">لوجوهات الشركاء</button>
-      <button class="nav-link" data-page="settings">إعدادات الموقع</button>
-      <button class="nav-link" id="logout-btn" style="margin-top:2rem; color:var(--danger)">خروج</button>
+      <div class="brand"><span class="dot"></span> لوحة التحكم</div>
+      <button class="nav-link active" data-page="analytics">📊 الإحصائيات</button>
+      <button class="nav-link" data-page="projects">🗂️ المشاريع</button>
+      <button class="nav-link" data-page="tags">🏷️ التاجات</button>
+      <button class="nav-link" data-page="partners">🤝 لوجوهات الشركاء</button>
+      <button class="nav-link" data-page="settings">⚙️ إعدادات الموقع</button>
+      <button class="nav-link" id="logout-btn" style="margin-top:2rem; color:var(--danger)">🚪 خروج</button>
     </nav>
     <main>
-      <div id="page-projects"></div>
+      <div id="page-analytics"></div>
+      <div id="page-projects" class="hidden"></div>
       <div id="page-tags" class="hidden"></div>
       <div id="page-partners" class="hidden"></div>
       <div id="page-settings" class="hidden"></div>

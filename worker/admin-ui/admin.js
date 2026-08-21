@@ -43,7 +43,7 @@ function showLogin() {
 function showApp() {
   document.getElementById("login-screen").classList.add("hidden");
   document.getElementById("app-screen").classList.remove("hidden");
-  loadProjectsPage();
+  loadAnalyticsPage();
 }
 
 async function boot() {
@@ -81,6 +81,7 @@ document.querySelectorAll("nav.sidebar .nav-link[data-page]").forEach((btn) => {
     btn.classList.add("active");
     document.querySelectorAll("main > div").forEach((p) => p.classList.add("hidden"));
     document.getElementById(`page-${btn.dataset.page}`).classList.remove("hidden");
+    if (btn.dataset.page === "analytics") loadAnalyticsPage();
     if (btn.dataset.page === "tags") loadTagsPage();
     if (btn.dataset.page === "partners") loadPartnersPage();
     if (btn.dataset.page === "settings") loadSettingsPage();
@@ -562,6 +563,144 @@ async function loadSettingsPage() {
       errorEl.textContent = "فشل الحفظ: " + err.message;
     }
   });
+}
+
+// ---------------- Analytics page ----------------
+async function loadAnalyticsPage() {
+  const root = document.getElementById("page-analytics");
+  root.innerHTML = `<h2>الإحصائيات</h2><p class="page-subtitle">جاري التحميل...</p>`;
+  try {
+    const [summary, recent] = await Promise.all([
+      api("/admin/api/analytics/summary?days=7"),
+      api("/admin/api/analytics/recent?limit=25"),
+    ]);
+    renderAnalyticsPage(summary, recent.events);
+  } catch (err) {
+    root.innerHTML = `<h2>الإحصائيات</h2><p class="error-msg">تعذر تحميل الإحصائيات: ${err.message}</p>`;
+  }
+}
+
+function renderAnalyticsPage(summary, recentEvents) {
+  const root = document.getElementById("page-analytics");
+  const maxDaily = Math.max(1, ...summary.daily.map((d) => d.pageviews));
+
+  const tableOrEmpty = (rows, cols) =>
+    rows.length ? rows : [Array(cols).fill("—")];
+
+  root.innerHTML = `
+    <h2>الإحصائيات</h2>
+    <p class="page-subtitle">آخر 7 أيام</p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">مشاهدات الصفحات</div>
+        <div class="value accent">${summary.totals?.pageviews ?? 0}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">زوار مميزون</div>
+        <div class="value">${summary.totals?.visitors ?? 0}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">أكتر صفحة زيارة</div>
+        <div class="value" style="font-size:1.1rem;">${escapeHtml(summary.topPages[0]?.path || "—")}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">أكتر مصدر</div>
+        <div class="value" style="font-size:1.1rem;">${escapeHtml(summary.topReferrers[0]?.referrer || "—")}</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>الزيارات يوميًا</h3>
+      ${
+        summary.daily.length
+          ? `<div class="bar-chart">${summary.daily
+              .map(
+                (d) => `
+        <div class="bar-col">
+          <div class="bar" style="height:${Math.max(3, Math.round((d.pageviews / maxDaily) * 100))}%" title="${d.pageviews} مشاهدة / ${d.visitors} زائر"></div>
+          <div class="bar-label">${d.day.slice(5)}</div>
+        </div>`,
+              )
+              .join("")}</div>`
+          : `<p style="color:var(--text-dim); font-size:0.85rem;">لسه مفيش زيارات مسجّلة.</p>`
+      }
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>أكتر الصفحات زيارة</h3>
+        <table class="data-table">
+          <thead><tr><th>الصفحة</th><th>عدد</th></tr></thead>
+          <tbody>
+            ${summary.topPages.map((p) => `<tr><td>${escapeHtml(p.path || "/")}</td><td>${p.count}</td></tr>`).join("") || `<tr><td colspan="2">لا بيانات</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>مصادر الزيارات</h3>
+        <table class="data-table">
+          <thead><tr><th>المصدر</th><th>عدد</th></tr></thead>
+          <tbody>
+            ${summary.topReferrers.map((r) => `<tr><td>${escapeHtml(r.referrer)}</td><td>${r.count}</td></tr>`).join("") || `<tr><td colspan="2">لا بيانات</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <h3>الأجهزة</h3>
+        <table class="data-table">
+          <thead><tr><th>الجهاز</th><th>عدد</th></tr></thead>
+          <tbody>
+            ${summary.devices.map((d) => `<tr><td>${escapeHtml(d.device)}</td><td>${d.count}</td></tr>`).join("") || `<tr><td colspan="2">لا بيانات</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+      <div class="panel">
+        <h3>الدول</h3>
+        <table class="data-table">
+          <thead><tr><th>الدولة</th><th>عدد</th></tr></thead>
+          <tbody>
+            ${summary.countries.map((c) => `<tr><td>${escapeHtml(c.country)}</td><td>${c.count}</td></tr>`).join("") || `<tr><td colspan="2">لا بيانات</td></tr>`}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>التفاعلات (نقرات مهمة)</h3>
+      <table class="data-table">
+        <thead><tr><th>النوع</th><th>التفاصيل</th><th>عدد</th></tr></thead>
+        <tbody>
+          ${summary.topEvents.map((e) => `<tr><td>${escapeHtml(e.event_type)}</td><td>${escapeHtml(e.label || "—")}</td><td>${e.count}</td></tr>`).join("") || `<tr><td colspan="3">لا تفاعلات مسجّلة لسه</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>آخر النشاطات</h3>
+      <table class="data-table">
+        <thead><tr><th>الوقت</th><th>النوع</th><th>الصفحة</th><th>الجهاز</th><th>الدولة</th></tr></thead>
+        <tbody>
+          ${
+            recentEvents
+              .map(
+                (e) => `<tr>
+              <td>${new Date(e.created_at + "Z").toLocaleString("ar-EG")}</td>
+              <td>${escapeHtml(e.event_type)}${e.label ? ": " + escapeHtml(e.label) : ""}</td>
+              <td>${escapeHtml(e.path || "—")}</td>
+              <td>${escapeHtml(e.device || "—")}</td>
+              <td>${escapeHtml(e.country || "—")}</td>
+            </tr>`,
+              )
+              .join("") || `<tr><td colspan="5">لسه مفيش نشاط</td></tr>`
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 boot();
