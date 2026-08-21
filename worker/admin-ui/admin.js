@@ -82,6 +82,7 @@ document.querySelectorAll("nav.sidebar .nav-link[data-page]").forEach((btn) => {
     document.querySelectorAll("main > div").forEach((p) => p.classList.add("hidden"));
     document.getElementById(`page-${btn.dataset.page}`).classList.remove("hidden");
     if (btn.dataset.page === "analytics") loadAnalyticsPage();
+    if (btn.dataset.page === "projects") loadProjectsPage();
     if (btn.dataset.page === "tags") loadTagsPage();
     if (btn.dataset.page === "partners") loadPartnersPage();
     if (btn.dataset.page === "settings") loadSettingsPage();
@@ -148,6 +149,11 @@ function renderProjectsPage() {
 
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function friendlyPath(path) {
+  if (!path || path === "/") return "الصفحة الرئيسية (/)";
+  return path;
 }
 
 // ---------------- Project editor modal ----------------
@@ -361,14 +367,17 @@ async function loadTagsPage() {
   state.tags = tags;
   const root = document.getElementById("page-tags");
   root.innerHTML = `
-    <h2 class="tags-page">التاجات</h2>
-    <div class="row" style="max-width:400px;">
-      <input id="new-tag-name" placeholder="اسم تاج جديد..." />
-      <button class="btn" id="create-tag-btn" style="flex:0 0 auto;">إضافة</button>
+    <h2>التاجات</h2>
+    <p class="page-subtitle">تُستخدم لتصنيف المشاريع وتفعيل الفلاتر</p>
+    <div class="panel tags-page" style="max-width:420px;">
+      <div class="row">
+        <input id="new-tag-name" placeholder="اسم تاج جديد..." />
+        <button class="btn" id="create-tag-btn" style="flex:0 0 auto;">إضافة</button>
+      </div>
+      <ul style="margin-top:1rem;">
+        ${tags.map((t) => `<li data-id="${t.id}"><span>${escapeHtml(t.name)}</span><button class="btn danger" data-id="${t.id}" style="padding:0.25rem 0.7rem;">حذف</button></li>`).join("") || `<li style="justify-content:center; color:var(--text-dim);">لسه مفيش تاجات</li>`}
+      </ul>
     </div>
-    <ul style="margin-top:1rem; max-width:400px;">
-      ${tags.map((t) => `<li data-id="${t.id}"><span>${escapeHtml(t.name)}</span><button class="btn danger" data-id="${t.id}" style="padding:0.2rem 0.6rem;">حذف</button></li>`).join("")}
-    </ul>
   `;
   document.getElementById("create-tag-btn").addEventListener("click", async () => {
     const input = document.getElementById("new-tag-name");
@@ -602,7 +611,7 @@ function renderAnalyticsPage(summary, recentEvents) {
       </div>
       <div class="stat-card">
         <div class="label">أكتر صفحة زيارة</div>
-        <div class="value" style="font-size:1.1rem;">${escapeHtml(summary.topPages[0]?.path || "—")}</div>
+        <div class="value" style="font-size:1.1rem;">${summary.topPages[0] ? escapeHtml(friendlyPath(summary.topPages[0].path)) : "—"}</div>
       </div>
       <div class="stat-card">
         <div class="label">أكتر مصدر</div>
@@ -633,7 +642,7 @@ function renderAnalyticsPage(summary, recentEvents) {
         <table class="data-table">
           <thead><tr><th>الصفحة</th><th>عدد</th></tr></thead>
           <tbody>
-            ${summary.topPages.map((p) => `<tr><td>${escapeHtml(p.path || "/")}</td><td>${p.count}</td></tr>`).join("") || `<tr><td colspan="2">لا بيانات</td></tr>`}
+            ${summary.topPages.map((p) => `<tr><td>${escapeHtml(friendlyPath(p.path))}</td><td>${p.count}</td></tr>`).join("") || `<tr><td colspan="2">لا بيانات</td></tr>`}
           </tbody>
         </table>
       </div>
@@ -690,7 +699,7 @@ function renderAnalyticsPage(summary, recentEvents) {
                 (e) => `<tr>
               <td>${new Date(e.created_at + "Z").toLocaleString("ar-EG")}</td>
               <td>${escapeHtml(e.event_type)}${e.label ? ": " + escapeHtml(e.label) : ""}</td>
-              <td>${escapeHtml(e.path || "—")}</td>
+              <td>${escapeHtml(friendlyPath(e.path))}</td>
               <td>${escapeHtml(e.device || "—")}</td>
               <td>${escapeHtml(e.country || "—")}</td>
             </tr>`,
