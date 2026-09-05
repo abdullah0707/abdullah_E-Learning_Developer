@@ -30,13 +30,16 @@
       })
       .join("");
 
+    var thumbnailAbsUrl = project.thumbnail_url ? API_BASE + project.thumbnail_url : "";
     var actionHtml = "";
-    if (project.sample_id || project.external_url) {
+    if (project.sample_id || project.external_url || thumbnailAbsUrl) {
       actionHtml =
         '<button type="button" class="button pulse-grow btn btn-danger open-template-btn" data-sample-id="' +
         escapeHtml(project.sample_id || "") +
         '" data-external-url="' +
         escapeHtml(project.external_url || "") +
+        '" data-thumbnail-url="' +
+        escapeHtml(thumbnailAbsUrl) +
         '" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Open Template</button>';
     }
 
@@ -69,6 +72,8 @@
           openTemplateModal({ type: "sample", sampleId: btn.dataset.sampleId });
         } else if (btn.dataset.externalUrl) {
           openTemplateModal({ type: "external", url: btn.dataset.externalUrl });
+        } else if (btn.dataset.thumbnailUrl) {
+          openTemplateModal({ type: "image", url: btn.dataset.thumbnailUrl });
         }
       });
     });
@@ -135,6 +140,7 @@
       ".preview-modal-box{position:relative;width:100%;height:100%;max-width:1500px;background:#000;" +
       "border-radius:10px;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.6);}" +
       ".preview-modal-box iframe{width:100%;height:100%;border:0;display:block;}" +
+      ".preview-modal-box img{width:100%;height:100%;object-fit:contain;display:block;}" +
       /* Close button: mirrors the site's existing .wildlife-close / .about-close
          language (top-right, 30x30, rotates 90deg on hover) so it reads as part
          of the same portfolio, but drawn in CSS instead of an external icon file
@@ -199,8 +205,24 @@
       }
     }
 
+    function mountImage(src) {
+      if (activeModal !== overlay) return; // closed before ready
+      var box = overlay.querySelector(".preview-modal-box");
+      var loading = overlay.querySelector(".preview-modal-loading");
+      if (loading) loading.remove();
+      var img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      box.insertBefore(img, box.firstChild.nextSibling);
+    }
+
     if (target.type === "external") {
       mountIframe(target.url);
+      return;
+    }
+
+    if (target.type === "image") {
+      mountImage(target.url);
       return;
     }
 
