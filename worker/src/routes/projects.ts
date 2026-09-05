@@ -68,11 +68,14 @@ export async function createProject(req: Request, env: Env): Promise<Response> {
   const slug = slugify(title) + "-" + crypto.randomUUID().slice(0, 6);
   const description = typeof body?.description === "string" ? body.description : null;
   const external_url = typeof body?.external_url === "string" ? body.external_url : null;
+  const thumbnail_r2_key = typeof body?.thumbnail_r2_key === "string" ? body.thumbnail_r2_key : null;
+  const sample_id = typeof body?.sample_id === "string" ? body.sample_id : null;
+  const status = body?.status === "published" ? "published" : "draft";
 
   const result = await env.DB.prepare(
-    `INSERT INTO projects (title, slug, description, external_url, status) VALUES (?, ?, ?, ?, 'draft')`,
+    `INSERT INTO projects (title, slug, description, external_url, thumbnail_r2_key, sample_id, status) VALUES (?, ?, ?, ?, ?, ?, ?)`,
   )
-    .bind(title, slug, description, external_url)
+    .bind(title, slug, description, external_url, thumbnail_r2_key, sample_id, status)
     .run();
 
   return json({ id: result.meta.last_row_id, slug }, 201);
