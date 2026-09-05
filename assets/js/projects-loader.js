@@ -79,6 +79,8 @@
     });
   }
 
+  var CACHE_TTL_MS = 60 * 1000;
+
   function loadProjects() {
     if (loaded || !grid) return;
     loaded = true;
@@ -86,8 +88,11 @@
     var cached = sessionStorage.getItem(CACHE_KEY);
     if (cached) {
       try {
-        renderProjects(JSON.parse(cached));
-        return;
+        var parsed = JSON.parse(cached);
+        if (Date.now() - parsed.ts < CACHE_TTL_MS) {
+          renderProjects(parsed.projects);
+          return;
+        }
       } catch (e) {
         /* fall through to fetch */
       }
@@ -100,7 +105,7 @@
         return res.json();
       })
       .then(function (data) {
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify(data.projects));
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), projects: data.projects }));
         renderProjects(data.projects);
       })
       .catch(function () {
