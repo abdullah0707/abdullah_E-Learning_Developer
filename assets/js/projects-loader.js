@@ -196,7 +196,7 @@
       var loading = overlay.querySelector(".preview-modal-loading");
       if (loading) loading.remove();
       var iframe = document.createElement("iframe");
-      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
+      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-downloads");
       iframe.src = src;
       box.insertBefore(iframe, box.firstChild.nextSibling);
     }
