@@ -57,7 +57,7 @@ export async function servePreviewFile(req: Request, env: Env, sampleId: string,
       "Content-Type": entry.contentType || "application/octet-stream",
       "Cache-Control": "private, no-store",
       "X-Content-Type-Options": "nosniff",
-      "Content-Security-Policy": "frame-ancestors 'self'",
+      "Content-Security-Policy": "frame-ancestors https://abdullah-e-learning-developer.pages.dev",
     },
   });
 }
