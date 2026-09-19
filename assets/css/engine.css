@@ -211,12 +211,12 @@ button{font:inherit;}
 .foot-item{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);
   border:1px solid var(--line);border-radius:99px;padding:7px 12px;}
 .foot-item:hover{color:var(--accent);border-color:var(--accent);}
-.share-row{display:flex;gap:8px;align-items:center;}
+.share-row{display:flex;gap:8px;align-items:center;margin-inline-end:76px;}
 .share-row .share-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-faint);margin-inline-end:2px;}
 .share-icon{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;
   justify-content:center;color:var(--text-dim);font-size:12px;}
 .share-icon:hover{color:var(--accent);border-color:var(--accent);}
-@media (max-width:700px){ .hero-foot{justify-content:center;} .foot-chips{justify-content:center;width:100%;} }
+@media (max-width:700px){ .hero-foot{justify-content:center;} .foot-chips{justify-content:center;width:100%;} .share-row{margin-inline-end:0;} }
 
 /* ---------------- work (projects) ---------------- */
 .work-stage{flex:1;min-height:0;display:flex;flex-direction:column;padding-block:6px 18px;}
