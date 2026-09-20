@@ -110,7 +110,27 @@ button{font:inherit;}
      step, the Contact socials, …) can land right where the fixed getbutton
      chat bubble sits at the bottom-right — reserve room below it so the
      two never overlap. */
-  .view.is-active{padding-bottom:84px;}
+  .view.is-active{padding-bottom:110px;}
+  /* These stages vertically-center their content for the strict no-scroll
+     desktop layout. Once content overflows into a real scrolling page here,
+     centering means the initial scroll position (0) lands mid-content
+     instead of at its top — e.g. About's first step could render at the
+     very bottom of the first screen, already covered by the chat bubble
+     before the visitor has scrolled at all. Flow from the top instead.
+     (".app" bumps specificity above the unconditional .about-stage/
+     .contact-stage rules declared later in the file — same specificity
+     would otherwise lose the tie by source order, the same trap as the
+     .magnetic bug above.) */
+  .app .about-stage, .app .contact-stage{align-items:flex-start;justify-content:flex-start;}
+  /* Padding-bottom alone only protects the very end of the page, but the
+     chat bubble covers that same physical bottom-right column for the
+     full scroll height of the page — a mid-page item (a step, a social
+     link) can still land there at some scroll position. Reserve a
+     permanent gutter matching that column, on the physical right
+     regardless of text direction, so nothing can ever be laid out under
+     it in the first place. */
+  .app .shell{padding-right:90px;}
+  .app .work-grid, .app .grid{padding-right:0;}
 }
 
 /* custom cursor */
@@ -228,16 +248,21 @@ button{font:inherit;}
 
 .hero-foot{position:relative;z-index:2;flex-shrink:0;display:flex;gap:22px;flex-wrap:wrap;align-items:center;
   padding:16px clamp(18px,4vw,44px) 20px;justify-content:space-between;}
+/* Physical (not logical) right-side clearance: the fixed getbutton chat
+   bubble always sits at the bottom-right of the SCREEN regardless of text
+   direction, so whichever group ends up physically on the right — foot-chips
+   in RTL, share-row in LTR — needs the same clearance either way. */
+.hero-foot{padding-right:calc(clamp(18px,4vw,44px) + 76px);}
 .foot-chips{display:flex;gap:10px;flex-wrap:wrap;}
 .foot-item{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-faint);
   border:1px solid var(--line);border-radius:99px;padding:7px 12px;}
 .foot-item:hover{color:var(--accent);border-color:var(--accent);}
-.share-row{display:flex;gap:8px;align-items:center;margin-inline-end:76px;}
+.share-row{display:flex;gap:8px;align-items:center;}
 .share-row .share-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--text-faint);margin-inline-end:2px;}
 .share-icon{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:inline-flex;align-items:center;
   justify-content:center;color:var(--text-dim);font-size:12px;}
 .share-icon:hover{color:var(--accent);border-color:var(--accent);}
-@media (max-width:700px){ .hero-foot{justify-content:center;} .foot-chips{justify-content:center;width:100%;} .share-row{margin-inline-end:0;} }
+@media (max-width:700px){ .hero-foot{justify-content:center;} .foot-chips{justify-content:center;width:100%;} }
 
 /* ---------------- work (projects) ---------------- */
 .work-stage{flex:1;min-height:0;display:flex;flex-direction:column;padding-block:6px 18px;}
@@ -269,7 +294,14 @@ button{font:inherit;}
 .work-scroll-wrap{position:relative;flex:1;min-height:0;}
 .work-scroll{height:100%;overflow-y:auto;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:8px;}
 .work-scroll::-webkit-scrollbar{display:none;}
-.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
+.work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;
+  /* As the grid scrolls internally, some card would eventually land in the
+     bottom-right corner where the fixed chat bubble sits — reserve a
+     physical-right gutter (see .hero-foot) so no column ever renders there.
+     Cancelled below in the mobile scroll-fallback mode, where .shell's own
+     gutter already covers it and doubling up would starve the grid of the
+     width a 270px column needs. */
+  padding-right:90px;}
 .work-card{position:relative;border-radius:18px;background:var(--card-grad);
   border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column;}
 .work-card:hover{border-color:rgba(var(--accent-rgb),.5);}
@@ -330,7 +362,11 @@ button{font:inherit;}
   border-top-color:var(--accent);animation:lib-spin .8s linear infinite;}
 @keyframes lib-spin{ to{ transform:rotate(360deg); } }
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px;
+  /* Same reasoning as .work-grid: reserve the chat-bubble gutter physically
+     on the right, cancelled in the mobile scroll-fallback mode below where
+     .shell already reserves it. */
+  padding-right:90px;}
 .card{background:var(--card-grad);border:1px solid var(--line);border-radius:16px;overflow:hidden;
   display:flex;flex-direction:column;cursor:pointer;text-align:start;padding:0;color:inherit;font-family:inherit;
   transition:transform .25s ease,border-color .25s ease;}
