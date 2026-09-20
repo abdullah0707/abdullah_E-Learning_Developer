@@ -3,9 +3,13 @@ import { json } from "../http";
 
 export const SETTINGS_KEYS = [
   "hero_title",
+  "hero_title_ar",
   "hero_tagline",
+  "hero_tagline_ar",
   "hero_welcome_text",
+  "hero_welcome_text_ar",
   "about_bio",
+  "about_bio_ar",
   "about_photo_r2_key",
   "cv_url",
   "social_facebook",

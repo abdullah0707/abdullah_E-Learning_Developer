@@ -53,11 +53,27 @@
     if (el) el.setAttribute("href", value);
   }
 
+  // Site-settings text comes from the CMS as plain strings, so it can't be
+  // covered by [data-i18n] like the static UI chrome — pick the field for
+  // the current language (falling back to English, then to a natural
+  // Arabic default) and re-run this on every language toggle, not just once
+  // at load, otherwise switching to Arabic left the bio/tagline/welcome
+  // line stuck in whatever the admin dashboard has for English.
+  var lastSettings = null;
+  function pickLang(settings, baseKey, dictDefaultKey) {
+    var isAr = window.PortfolioI18N && window.PortfolioI18N.get() === "ar";
+    if (isAr) {
+      return settings[baseKey + "_ar"] || (dictDefaultKey && window.PortfolioI18N.t(dictDefaultKey)) || settings[baseKey];
+    }
+    return settings[baseKey] || "";
+  }
+
   function applySiteSettings(settings) {
-    setText("hero-title", settings.hero_title);
-    setText("hero-tagline", settings.hero_tagline);
-    setText("hero-welcome", settings.hero_welcome_text);
-    setText("about-bio-text", settings.about_bio);
+    lastSettings = settings;
+    setText("hero-title", pickLang(settings, "hero_title"));
+    setText("hero-tagline", pickLang(settings, "hero_tagline", "heroTaglineDefault"));
+    setText("hero-welcome", pickLang(settings, "hero_welcome_text", "heroWelcomeDefault"));
+    setText("about-bio-text", pickLang(settings, "about_bio", "aboutBioDefault"));
     setHref("cv-link", settings.cv_url);
     setHref("social-facebook", settings.social_facebook);
     setHref("social-linkedin", settings.social_linkedin);
@@ -141,6 +157,10 @@
       renderPartners(results[1].partners || []);
     })
     .catch(function () {});
+
+  document.addEventListener("portfolio:langchange", function () {
+    if (lastSettings) applySiteSettings(lastSettings);
+  });
 
   /* ============================== work grid (projects) ============================== */
   var CACHE_KEY = "portfolio_projects_v1";
