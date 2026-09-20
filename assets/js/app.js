@@ -77,7 +77,6 @@
     setHref("cv-link", settings.cv_url);
     setHref("social-facebook", settings.social_facebook);
     setHref("social-linkedin", settings.social_linkedin);
-    setHref("social-github", settings.social_github);
     setHref("social-phone", settings.social_phone ? "tel:" + settings.social_phone : null);
 
     if (settings.social_whatsapp_number) {
