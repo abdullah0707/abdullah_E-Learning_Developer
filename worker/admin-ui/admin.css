@@ -337,6 +337,10 @@ table.data-table tr:hover td { background: var(--panel-2); }
 .sheet .row > * { flex: 1; }
 .sheet .actions-bar { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
 
+#page-settings .row { display: flex; gap: 0.75rem; }
+#page-settings .row > * { flex: 1; min-width: 0; }
+@media (max-width: 640px) { #page-settings .row { flex-direction: column; } }
+
 .tag-picker { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
 .tag-toggle {
   border: 1px solid var(--border);

@@ -482,19 +482,28 @@ async function loadSettingsPage() {
     <h2>إعدادات الموقع</h2>
 
     <h3 style="font-size:1rem; color:var(--text-dim); margin-top:1.5rem;">الشاشة الرئيسية (Home)</h3>
-    <label>الاسم / العنوان الرئيسي</label>
-    <input id="s-hero-title" value="${v("hero_title")}" />
-    <label>الوصف تحت الاسم</label>
-    <input id="s-hero-tagline" value="${v("hero_tagline")}" />
-    <label>نص الترحيب</label>
-    <input id="s-hero-welcome" value="${v("hero_welcome_text")}" />
+    <p class="page-subtitle">الموقع بيدعم لغتين (عربي/إنجليزي) — لازم تملأ نسخة كل نص باللغتين، وإلا هيفضل ظاهر بالإنجليزي حتى لو الزائر مبدّل للعربي.</p>
+    <div class="row">
+      <div><label>الاسم / العنوان الرئيسي (English)</label><input id="s-hero-title" value="${v("hero_title")}" /></div>
+      <div><label>الاسم / العنوان الرئيسي (عربي)</label><input id="s-hero-title-ar" dir="rtl" value="${v("hero_title_ar")}" /></div>
+    </div>
+    <div class="row">
+      <div><label>الوصف تحت الاسم (English)</label><input id="s-hero-tagline" value="${v("hero_tagline")}" /></div>
+      <div><label>الوصف تحت الاسم (عربي)</label><input id="s-hero-tagline-ar" dir="rtl" value="${v("hero_tagline_ar")}" /></div>
+    </div>
+    <div class="row">
+      <div><label>نص الترحيب (English)</label><input id="s-hero-welcome" value="${v("hero_welcome_text")}" /></div>
+      <div><label>نص الترحيب (عربي)</label><input id="s-hero-welcome-ar" dir="rtl" value="${v("hero_welcome_text_ar")}" /></div>
+    </div>
 
     <h3 style="font-size:1rem; color:var(--text-dim); margin-top:1.5rem;">قسم About</h3>
     <label>صورة About</label>
     <input type="file" id="s-about-photo" accept="image/*" />
     <div class="error-msg" id="about-photo-status"></div>
-    <label>النبذة التعريفية</label>
-    <textarea id="s-about-bio" rows="4">${v("about_bio")}</textarea>
+    <div class="row">
+      <div><label>النبذة التعريفية (English)</label><textarea id="s-about-bio" rows="4">${v("about_bio")}</textarea></div>
+      <div><label>النبذة التعريفية (عربي)</label><textarea id="s-about-bio-ar" dir="rtl" rows="4">${v("about_bio_ar")}</textarea></div>
+    </div>
     <label>رابط تحميل الـ CV</label>
     <input id="s-cv-url" value="${v("cv_url")}" />
 
@@ -552,9 +561,13 @@ async function loadSettingsPage() {
     okEl.textContent = "";
     const payload = {
       hero_title: document.getElementById("s-hero-title").value.trim(),
+      hero_title_ar: document.getElementById("s-hero-title-ar").value.trim(),
       hero_tagline: document.getElementById("s-hero-tagline").value.trim(),
+      hero_tagline_ar: document.getElementById("s-hero-tagline-ar").value.trim(),
       hero_welcome_text: document.getElementById("s-hero-welcome").value.trim(),
+      hero_welcome_text_ar: document.getElementById("s-hero-welcome-ar").value.trim(),
       about_bio: document.getElementById("s-about-bio").value.trim(),
+      about_bio_ar: document.getElementById("s-about-bio-ar").value.trim(),
       about_photo_r2_key: pendingAboutPhotoKey || "",
       cv_url: document.getElementById("s-cv-url").value.trim(),
       social_facebook: document.getElementById("s-facebook").value.trim(),
