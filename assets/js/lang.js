@@ -108,8 +108,8 @@ window.PortfolioI18N = (function () {
       step3Body: "دمج وتوصيل المحتوى بنظام إدارة التعلم (LMS) باستخدام أكواد JavaScript مخصصة، واختبار الكورس بالكامل قبل التسليم النهائي.",
 
       contactEyebrow: "لنتحدث",
-      contactHeadline: "عندك كورس محتاج يبقى فيه حياة؟",
-      contactLede: "سواء عايز تشتغل معايا أو بس عايز تسلّم، يسعدني اسمع منك.",
+      contactHeadline: "لديك دورة تدريبية بحاجة إلى لمسة من الحياة والتفاعل؟",
+      contactLede: "سواء كنت ترغب في التعاون معي أو مجرد التواصل والتعارف، يسعدني أن أسمع منك.",
       formName: "الاسم", formEmail: "البريد الإلكتروني", formPhone: "رقم الهاتف", formMessage: "الرسالة", formSubmit: "إرسال الرسالة",
       socialEmail: "البريد", socialCall: "اتصال",
       toastSent: "تم إرسال رسالتك بنجاح",
