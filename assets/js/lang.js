@@ -11,12 +11,15 @@ window.PortfolioI18N = (function () {
     en: {
       navHome: "Home", navWork: "Work", navLibrary: "Library", navAbout: "About", navContact: "Contact",
       statusPill: "Cairo, Egypt · GMT+2",
-      langToggleLabel: "العربية",
+      langToggleLabel: "AR",
       openMenuAria: "Open menu", closeMenuAria: "Close menu",
       themeToggleAria: "Switch to light mode", themeToggleAriaLight: "Switch to dark mode",
 
       heroEyebrow: "Technical consultant for educational content",
       heroLede: "I help teams design, build and scale interactive learning experiences — from hands-on development in Articulate Storyline 360 and Adobe Animate to technical consulting on architecture, tooling and production pipelines for educational content.",
+      heroTaglineDefault: "E-Learning Developer",
+      heroWelcomeDefault: "Welcome to Portfolio",
+      aboutBioDefault: "Driven by a passion for creating transformative online learning experiences, I specialize as an eLearning developer in crafting engaging and effective solutions tailored to the unique needs of each client. With extensive expertise in multimedia development, learning management systems, educational games, and custom training packages, I am dedicated to delivering high-quality, interactive eLearning that drives measurable outcomes.",
       ctaViewWork: "View the work",
       ctaGetInTouch: "Get in touch",
       photoCaption: "Cairo, Egypt — remote-friendly",
@@ -64,12 +67,15 @@ window.PortfolioI18N = (function () {
     ar: {
       navHome: "الرئيسية", navWork: "الأعمال", navLibrary: "المكتبة", navAbout: "نبذة عني", navContact: "تواصل",
       statusPill: "القاهرة، مصر · GMT+2",
-      langToggleLabel: "English",
+      langToggleLabel: "EN",
       openMenuAria: "فتح القائمة", closeMenuAria: "إغلاق القائمة",
       themeToggleAria: "التبديل للوضع الفاتح", themeToggleAriaLight: "التبديل للوضع الغامق",
 
       heroEyebrow: "استشاري تقني للمحتوى التعليمي",
       heroLede: "بساعد الفرق تصمم وتبني وتوسّع تجارب تعليمية تفاعلية — من التنفيذ العملي بـ Articulate Storyline 360 وAdobe Animate، لحد الاستشارات التقنية في البنية والأدوات وخطوط إنتاج المحتوى التعليمي.",
+      heroTaglineDefault: "مطوّر تعليم إلكتروني",
+      heroWelcomeDefault: "أهلاً بيك في البورتفوليو",
+      aboutBioDefault: "بدافع الشغف لابتكار تجارب تعليمية رقمية ذات أثر ملموس، أخصص خبرتي كمطور تعليم إلكتروني لابتكار حلول تفاعلية وفعالة تُصمَّم خصيصًا لتلبية الاحتياجات الفريدة لكل عميل. مع خبرة واسعة في تطوير الوسائط المتعددة، وأنظمة إدارة التعلم (LMS)، والألعاب التعليمية، والحزم التدريبية المخصصة، ألتزم بتقديم محتوى تعليمي إلكتروني تفاعلي عالي الجودة يحقق نتائج قابلة للقياس.",
       ctaViewWork: "شوف الأعمال",
       ctaGetInTouch: "تواصل معايا",
       photoCaption: "القاهرة، مصر — العمل عن بُعد",
@@ -91,19 +97,19 @@ window.PortfolioI18N = (function () {
       chipConsulting: "استشارات تقنية",
 
       aboutEyebrow: "نبذة عني",
-      aboutHeadline: "من إني أبني الكورسات بنفسي، لحد إني أساعد الفرق تبنيها صح.",
+      aboutHeadline: "من بناء الدورات التدريبية بنفسي، إلى مساعدة الفرق على بنائها بالطريقة الصحيحة.",
       cvLink: "تحميل آخر نسخة CV",
       ctaGetInTouch2: "تواصل معايا",
-      step1Title: "افهم المتعلم",
-      step1Body: "هو مين، عارف إيه قبل كده، وبيتعثر فين بالظبط.",
-      step2Title: "صمّم التفاعل",
-      step2Body: "مش ديكور — آلية بتخلي الفكرة تعلق في دماغ المتعلم، مبنية بـ Storyline أو Animate.",
-      step3Title: "ابني ونفّذ",
-      step3Body: "متوصّل بنظام الـ LMS بتاعك بكود JavaScript مخصص، ومُختبر بالكامل قبل التسليم.",
+      step1Title: "فهم المتعلم",
+      step1Body: "تحديد هوية المتعلمين، ومعرفتهم المسبقة، والنقاط والتحديات التي يواجهون صعوبة فيها بالفعل.",
+      step2Title: "تصميم التفاعل",
+      step2Body: "ليس مجرد مظهر جمالي أو زخرفة — بل آلية تفاعلية ترسّخ المفاهيم، تُبنى باستخدام Articulate Storyline أو Adobe Animate.",
+      step3Title: "البناء والتسليم",
+      step3Body: "دمج وتوصيل المحتوى بنظام إدارة التعلم (LMS) باستخدام أكواد JavaScript مخصصة، واختبار الكورس بالكامل قبل التسليم النهائي.",
 
       contactEyebrow: "لنتحدث",
-      contactHeadline: "عندك كورس محتاج يبقى فيه حياة؟",
-      contactLede: "سواء عايز تشتغل معايا أو بس عايز تسلّم، يسعدني اسمع منك.",
+      contactHeadline: "لديك دورة تدريبية بحاجة إلى لمسة من الحياة والتفاعل؟",
+      contactLede: "سواء كنت ترغب في التعاون معي أو مجرد التواصل والتعارف، يسعدني أن أسمع منك.",
       formName: "الاسم", formEmail: "البريد الإلكتروني", formPhone: "رقم الهاتف", formMessage: "الرسالة", formSubmit: "إرسال الرسالة",
       socialEmail: "البريد", socialCall: "اتصال",
       toastSent: "تم إرسال رسالتك بنجاح",
@@ -163,6 +169,10 @@ window.PortfolioI18N = (function () {
       document.dispatchEvent(new CustomEvent("animlib:langchange"));
       if (window.AnimLibRender && window.__libEngineReady) window.__libRefreshAfterLangChange && window.__libRefreshAfterLangChange();
     }
+    // Lets anything driven by CMS content (not a static [data-i18n] string —
+    // e.g. the About bio, fetched once from the API) re-render itself in the
+    // newly selected language too.
+    document.dispatchEvent(new CustomEvent("portfolio:langchange", { detail: { lang: current } }));
   }
 
   function get() { return current; }
