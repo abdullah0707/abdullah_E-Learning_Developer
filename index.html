@@ -203,23 +203,41 @@
     </div>
   </div>
 
-  <!-- ===================== LIBRARY (embedded animation gallery) ===================== -->
+  <!-- ===================== LIBRARY (animations + function activities) ===================== -->
   <div class="view" data-view="library">
     <div class="work-stage">
       <div class="shell">
+        <div class="lib-tabs" role="tablist">
+          <button type="button" class="lib-tab is-active" role="tab" id="libTabAnimations" data-lib-tab="animations" aria-selected="true">
+            <span class="lib-tab__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="9" height="9" rx="2"/><path d="M15 15l5 5M17 8h3M8 17v3"/></svg></span>
+            <span class="lib-tab__text"><strong data-i18n="libTabAnim">Animation Library</strong><span data-i18n="libTabAnimSub">Ready-made motion for any object</span></span>
+            <span class="lib-tab__count" id="libCountAnimations"></span>
+          </button>
+          <button type="button" class="lib-tab" role="tab" id="libTabActivities" data-lib-tab="activities" aria-selected="false">
+            <span class="lib-tab__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="7" height="5" rx="1.5"/><rect x="14" y="14" width="7" height="5" rx="1.5"/><path d="M10 7.5c4 0 4 9 4 9"/></svg></span>
+            <span class="lib-tab__text"><strong data-i18n="libTabAct">Function Activity Library</strong><span data-i18n="libTabActSub">Complete interactive activities</span></span>
+            <span class="lib-tab__count" id="libCountActivities"></span>
+          </button>
+        </div>
         <div class="lib-hero">
-          <p class="eyebrow" data-i18n="libEyebrow">for-storyline-only</p>
-          <h2 class="lib-title">
-            <span data-i18n="libTitlePrefix"></span><span class="accent-word" data-i18n="libTitleAccent">Storyline</span><span data-i18n="libTitleSuffix"></span>
-          </h2>
-          <p class="lede lib-lede" data-i18n="libDesc">Ready-made animations, tuned and tested specifically for Articulate Storyline — preview here, tweak duration, delay and easing, then grab the code.</p>
+          <div class="lib-hero__copy">
+            <p class="eyebrow" id="libEyebrow">for-storyline-only</p>
+            <h2 class="lib-title"><span id="libTitlePrefix"></span><span class="accent-word" id="libTitleAccent">Storyline</span><span id="libTitleSuffix"></span></h2>
+            <p class="lede lib-lede" id="libDesc">Ready-made animations, tuned and tested specifically for Articulate Storyline — preview here, tweak duration, delay and easing, then grab the code.</p>
+          </div>
           <div class="hero__stats" id="libStatsRow"></div>
+        </div>
+        <div class="lib-toolbar">
+          <label class="lib-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="search" id="libSearch" autocomplete="off" spellcheck="false">
+          </label>
         </div>
         <div class="filters" id="libFilters"></div>
         <div class="work-scroll-wrap" id="libScrollWrap">
           <div class="work-scroll" id="libScroll">
             <div class="grid" id="libGrid">
-              <div class="lib-loading" id="libLoading"><span class="spin"></span><span data-i18n="libLoading">Loading the animation library…</span></div>
+              <div class="lib-loading" id="libLoading"><span class="spin"></span><span data-i18n="libLoading">Loading the library…</span></div>
             </div>
           </div>
           <div class="scroll-fade scroll-fade--bottom"></div>

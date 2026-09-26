@@ -1,8 +1,9 @@
-// Modal: live preview + editable controls (duration, delay, easing, infinite
-// toggle, colors) + syntax-highlighted code that always matches the current
-// control values exactly (one function builds both the preview and the
-// copy-able text from the same edited code string - no parallel logic to
-// keep in sync) + copy-to-clipboard + forced replay.
+// Animation modal: live preview + editable controls (duration, delay, easing,
+// infinite toggle, colors) + syntax-highlighted code that always matches the
+// current control values exactly (one function builds both the preview and
+// the copy-able text from the same edited code string - no parallel logic to
+// keep in sync) + copy-to-clipboard + forced replay. Function activities have
+// their own full-screen popup (activities/js/activity-modal.js).
 (function () {
   'use strict';
 
@@ -34,7 +35,11 @@
       }
 
       var re;
-      if (p.type === 'color') {
+      if (p.type === 'color' || p.type === 'select') {
+        // 'select' here means a plain `var KEY = 'stringValue';` with a
+        // fixed set of string options (e.g. a file format) - EASING_OVERRIDE
+        // is the one 'select' param that isn't this shape, and it already
+        // returned above via its own key-specific branch.
         re = new RegExp("(var " + p.key + " = )'[^']*'(;)");
         out = out.replace(re, "$1'" + val + "'$2");
       } else if (p.type === 'checkbox') {
@@ -50,7 +55,7 @@
 
   function buildControl(param) {
     var val = currentValues[param.key];
-    var label = window.AnimLibI18n.paramLabel(param.label);
+    var label = window.AnimLibI18n.paramLabel(param);
     var wrap = document.createElement('div');
     wrap.className = 'control' + (param.type === 'checkbox' ? ' control-check' : '');
 
@@ -90,7 +95,10 @@
       labelEl.textContent = label;
       wrap.appendChild(labelEl);
 
-      var selectEl = window.AnimLibCustomSelect.create(param.options, val, function (newVal) {
+      var options = param.options.map(function (o) {
+        return { value: o.value, label: window.AnimLibI18n.optionLabel(o.label) };
+      });
+      var selectEl = window.AnimLibCustomSelect.create(options, val, function (newVal) {
         currentValues[param.key] = newVal;
         refreshModal();
       }, 'ctrl-' + param.key);
@@ -102,13 +110,11 @@
 
   function refreshModal() {
     var item = currentItem;
-    var idPrefix = 'demo-modal-' + item.id;
-
-    modalStage.innerHTML = window.AnimLibRuntime.buildStageHtml(item, idPrefix, 'card__shape');
-
     var editedCode = applyParamValues(item.code, item.params, currentValues);
     modalCode.innerHTML = window.AnimLibHighlight.highlight(editedCode);
 
+    var idPrefix = 'demo-modal-' + item.id;
+    modalStage.innerHTML = window.AnimLibRuntime.buildStageHtml(item, idPrefix, 'card__shape');
     var effectiveDuration = currentValues.DURATION_MS !== undefined ? currentValues.DURATION_MS : (item.params[0] ? item.params[0].default : 600);
     window.AnimLibRuntime.play(item, idPrefix, editedCode, effectiveDuration);
   }
@@ -117,11 +123,11 @@
     var item = currentItem;
     var i18n = window.AnimLibI18n;
     modalTitle.textContent = i18n.itemName(item);
-    modalMeta.textContent = i18n.itemCategory(item) + ' · ' + i18n.itemMeta(item);
 
     modalControls.innerHTML = '';
     item.params.forEach(function (p) { modalControls.appendChild(buildControl(p)); });
 
+    modalMeta.textContent = i18n.itemCategory(item) + ' · ' + i18n.itemMeta(item);
     modalInstall.innerHTML =
       '<li>' + i18n.t('installStep1') + '</li>' +
       '<li>' + i18n.t('installStep2') + '</li>' +

@@ -38,7 +38,10 @@
       backToTop: 'الرجوع لأعلى الصفحة',
       contactLinkedin: 'تواصل معايا على لينكدإن',
       contactWhatsapp: 'تواصل معايا على واتساب',
-      contactPortfolio: 'شوف البورتفوليو بتاعي'
+      contactPortfolio: 'شوف البورتفوليو بتاعي',
+      statActs: 'أنشطة', statDrag: 'سحب وإفلات', statGauges: 'مؤشرات',
+      groupMatch: 'توصيل', groupReorder: 'ترتيب', groupGauge: 'مؤشرات', groupOther: 'أخرى',
+      newBadge: 'جديد', noResults: 'مفيش نتايج — جرّب كلمة تانية أو تصنيف تاني.'
     },
     en: {
       brand: 'Storyline Library',
@@ -69,14 +72,18 @@
       backToTop: 'Back to top',
       contactLinkedin: 'Connect with me on LinkedIn',
       contactWhatsapp: 'Message me on WhatsApp',
-      contactPortfolio: 'View my portfolio'
+      contactPortfolio: 'View my portfolio',
+      statActs: 'Activities', statDrag: 'Drag & drop', statGauges: 'Gauges',
+      groupMatch: 'Matching', groupReorder: 'Reorder', groupGauge: 'Gauges', groupOther: 'Other',
+      newBadge: 'New', noResults: 'Nothing matches — try another word or category.'
     }
   };
 
   var CATEGORY_EN = {
     'أساسي': 'Basic', 'ظهور': 'Entrance', 'اختفاء': 'Exit', 'نصوص': 'Text',
     'لفت انتباه': 'Attention', 'خلفية': 'Background', 'لودر': 'Loader',
-    'عند التمرير': 'Hover', 'تقدّم': 'Progress'
+    'عند التمرير': 'Hover', 'تقدّم': 'Progress',
+    'فانكشن اكتيفتي': 'Function Activity'
   };
 
   var TYPE_EN = { once: 'One-shot', loop: 'Loop', hover: 'Hover' };
@@ -188,9 +195,25 @@
 
   function metaToEn(meta) {
     return meta
-      .replace(/ثانية/g, 's')
+      .replace(/يحتاج fill صورة أعرض من 100%/g, 'needs a fill image wider than 100%')
+      .replace(/يحتاج صورة خلفية/g, 'needs a background image')
+      .replace(/أي كائن بخلفية/g, 'any object with a background')
+      .replace(/تكبير وتصغير بالتبادل/g, 'alternating zoom in and out')
+      .replace(/تصميم أصلي/g, 'original design')
       .replace(/نص فقط/g, 'text only')
-      .replace(/يحتاج fill صورة أعرض من 100%/g, 'needs a fill image wider than 100%');
+      .replace(/لكل دورة/g, 'per cycle')
+      .replace(/لكل نبضة/g, 'per pulse')
+      .replace(/لكل مرور/g, 'per sweep')
+      .replace(/لكل حرف/g, 'per letter')
+      .replace(/لكل نطة/g, 'per bounce')
+      .replace(/لكل نقطة/g, 'per dot')
+      .replace(/(\d+) عناصر/g, '$1 elements')
+      .replace(/ثوان/g, 's')
+      .replace(/ثانية/g, 's');
+  }
+
+  function optionLabel(label) {
+    return get() === 'en' ? label.replace(/^الافتراضي \(/, 'Default (') : label;
   }
 
   function get() {
@@ -202,17 +225,33 @@
 
   function t(key) { return UI[get()][key]; }
 
-  function itemName(item) { return get() === 'en' ? idToTitle(item.id) : item.name; }
+  // Function Activity items carry their own hand-written nameAr/nameEn,
+  // metaAr/metaEn, descAr/descEn and installStepsAr/installStepsEn pairs
+  // (unlike the 347 CSS animations, their Arabic/English copy genuinely
+  // differs sentence-by-sentence - idToTitle()/metaToEn()'s mechanical
+  // derivation doesn't apply) - read the matching field directly instead.
+  function itemName(item) {
+    if (item.kind === 'activity') return get() === 'en' ? item.nameEn : item.nameAr;
+    return get() === 'en' ? idToTitle(item.id) : item.name;
+  }
   function itemCategory(item) { return get() === 'en' ? (CATEGORY_EN[item.category] || item.category) : item.category; }
-  function itemMeta(item) { return get() === 'en' ? metaToEn(item.meta) : item.meta; }
+  function itemMeta(item) {
+    if (item.kind === 'activity') return get() === 'en' ? item.metaEn : item.metaAr;
+    return get() === 'en' ? metaToEn(item.meta) : item.meta;
+  }
   function itemHint(item) { return get() === 'en' ? (HINT_EN[item.hint] || item.hint) : item.hint; }
   function itemTrigger(item) { return get() === 'en' ? (TRIGGER_EN[item.trigger] || item.trigger) : item.trigger; }
   function typeLabel(type) { return get() === 'en' ? TYPE_EN[type] : { once: 'مرة واحدة', loop: 'حلقة مستمرة', hover: 'عند التمرير' }[type]; }
-  function paramLabel(label) { return get() === 'en' ? (PARAM_LABEL_EN[label] || label) : label; }
+  function paramLabel(param) {
+    var label = get() === 'en' ? param.labelEn : param.labelAr;
+    if (label !== undefined) return label; // activity params: bilingual pair already on the param itself
+    return get() === 'en' ? (PARAM_LABEL_EN[param.label] || param.label) : param.label;
+  }
 
   window.AnimLibI18n = {
     get: get, set: set, t: t,
     itemName: itemName, itemCategory: itemCategory, itemMeta: itemMeta,
-    itemHint: itemHint, itemTrigger: itemTrigger, typeLabel: typeLabel, paramLabel: paramLabel
+    itemHint: itemHint, itemTrigger: itemTrigger, typeLabel: typeLabel, paramLabel: paramLabel,
+    optionLabel: optionLabel
   };
 })();
