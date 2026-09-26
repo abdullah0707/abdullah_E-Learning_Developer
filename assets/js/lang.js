@@ -31,12 +31,16 @@ window.PortfolioI18N = (function () {
       scrollUpAria: "Scroll back to top",
       openTemplateArrow: "Open template ↗",
 
+      libTabAnim: "Animation Library", libTabAnimSub: "Ready-made motion for any object",
+      libTabAct: "Function Activity Library", libTabActSub: "Complete interactive activities",
       libEyebrow: "for-storyline-only",
       libTitlePrefix: "", libTitleAccent: "Storyline", libTitleSuffix: " Animation Library",
       libDesc: "Ready-made animations, tuned and tested specifically for Articulate Storyline — preview here, tweak duration, delay and easing, then grab the code.",
-      libLoading: "Loading the animation library…",
-      libFunctionActivity: "Function Activity",
-      libComingSoon: "Coming soon — new function-activity animations land here shortly.",
+      actEyebrow: "storyline-functions",
+      actTitlePrefix: "Function ", actTitleAccent: "Activity", actTitleSuffix: " Library",
+      actDesc: "Complete interactive activities that run inside Storyline with JavaScript — try each one here exactly as your learner will, customize it, then take the code with your settings.",
+      libSearchAnim: "Search {n} animations…", libSearchAct: "Search activities…",
+      libLoading: "Loading the library…",
 
       chipConsulting: "Technical Consulting",
 
@@ -87,12 +91,16 @@ window.PortfolioI18N = (function () {
       scrollUpAria: "ارجع لأعلى",
       openTemplateArrow: "افتح القالب ↗",
 
+      libTabAnim: "مكتبة الأنيميشن", libTabAnimSub: "حركات جاهزة لأي عنصر",
+      libTabAct: "مكتبة الفانكشن اكتيفتي", libTabActSub: "أنشطة تفاعلية كاملة",
       libEyebrow: "for-storyline-only",
       libTitlePrefix: "مكتبة ", libTitleAccent: "استوري لاين", libTitleSuffix: " للأنيميشن",
       libDesc: "أنيميشنز جاهزة، معايرة ومختبرة خصيصًا لتعمل داخل Articulate Storyline — جرّبها هنا، عدّل المدة والتأخير ومنحنى الحركة، وخد الكود جاهز.",
-      libLoading: "جاري تحميل مكتبة الأنيميشن…",
-      libFunctionActivity: "فانكشن اكتيفتي",
-      libComingSoon: "قريبًا — هضيف هنا أنيميشنز فانكشن اكتيفتي جديدة.",
+      actEyebrow: "storyline-functions",
+      actTitlePrefix: "مكتبة ", actTitleAccent: "فانكشن", actTitleSuffix: " اكتيفتي",
+      actDesc: "أنشطة تفاعلية كاملة بتشتغل جوه Storyline بكود JavaScript — جرّب النشاط هنا زي ما المتعلم هيشوفه، خصّصه، وخد الكود بإعداداتك.",
+      libSearchAnim: "ابحث في {n} أنيميشن…", libSearchAct: "ابحث في الأنشطة…",
+      libLoading: "جاري تحميل المكتبة…",
 
       chipConsulting: "استشارات تقنية",
 

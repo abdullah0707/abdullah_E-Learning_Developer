@@ -11,15 +11,25 @@
   // immediately clear the is-active class it had just set two lines earlier.
   var viewTriggers = document.querySelectorAll("[data-view]:not(.view)");
 
-  function showView(name) {
+  // Library tab + per-tab filter/search, declared before the first showView()
+  // below since a deep link (#library/activities) needs it on page load.
+  var LIB_TABS = ["animations", "activities"];
+  var libState = { tab: "animations", cat: {}, q: {} };
+
+  function viewHash(name) {
+    return "#" + name + (name === "library" && libState.tab === "activities" ? "/activities" : "");
+  }
+
+  function showView(name, sub) {
+    if (name === "library" && LIB_TABS.indexOf(sub) !== -1) libState.tab = sub;
     views.forEach(function (v) { v.classList.toggle("is-active", v.dataset.view === name); });
     viewTriggers.forEach(function (l) { l.classList.toggle("is-active", l.classList.contains("navlink") && l.dataset.view === name); });
     closeMobileNav();
     if (name === "work") loadProjects();
-    if (name === "library") ensureLibraryLoaded();
+    if (name === "library") { syncLibTabs(); ensureLibraryLoaded(); }
     if (window.trackEvent) window.trackEvent("view_" + name);
     if (window.PortfolioFX) window.PortfolioFX.rescan();
-    if (window.location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+    if (window.location.hash !== viewHash(name)) history.replaceState(null, "", viewHash(name));
     requestAnimationFrame(updateScrollIndicator);
   }
 
@@ -27,9 +37,10 @@
     link.addEventListener("click", function () { showView(link.dataset.view); });
   });
 
-  var initialView = (window.location.hash || "").replace("#", "") || "home";
+  var initialHash = (window.location.hash || "").replace("#", "").split("/");
+  var initialView = initialHash[0] || "home";
   if (!document.querySelector('.view[data-view="' + initialView + '"]')) initialView = "home";
-  showView(initialView);
+  showView(initialView, initialHash[1]);
 
   /* ============================== mobile nav ============================== */
   var menuBtn = document.getElementById("menuBtn");
@@ -263,14 +274,18 @@
 
   wireScrollBox("workScrollWrap", "workScroll", "scrollArrowDown", "scrollArrowUp");
 
-  /* ============================== animation library (embedded, lazy-loaded) ==============================
-     347 animations is a lot of DOM/JS to ship on every page load, so the
-     engine (render/modal/runtime + the ~1.3MB data file) only loads the
-     first time someone actually opens the Library view. Scripts are plain
-     globals (window.AnimLib*), so they're injected in order with
-     async=false, which guarantees execution order without a bundler. */
-  var libEngineLoading = false;
-  window.__libEngineReady = false;
+  /* ============================== library (embedded, lazy-loaded) ==============================
+     Two tabs, each with its own data file: the animations (~2MB) load the
+     first time someone opens the Library view, the function activities
+     (~0.5MB) only when their tab is first opened. Scripts are plain globals
+     (window.AnimLib*), injected in order with async=false, which guarantees
+     execution order without a bundler.
+     The loading flags are declared without an initial value on purpose: a
+     deep link to #library starts loading from the showView() call at the top
+     of this file, before these lines run, and assigning `false` here would
+     reset a load that is already in flight. */
+  var libEngineLoading, actsLoading;
+  window.__libEngineReady = window.__libEngineReady || false;
 
   function loadScriptsInOrder(urls, done) {
     var remaining = urls.length;
@@ -284,76 +299,105 @@
     });
   }
 
-  function libFilterLabel() {
-    // AnimLibRender.ALL sentinel isn't known until the engine loads; read it then.
-    return window.AnimLibRender ? window.AnimLibRender.ALL : null;
-  }
+  function libItems(tab) { return (tab === "activities" ? window.ACTIVITIES : window.ANIMATIONS) || null; }
 
-  // "Function Activity" is a placeholder category with no real animations
-  // yet (more are coming later) — render.js only ever builds pills for
-  // categories that actually exist in window.ANIMATIONS, so this one is
-  // layered on top by hand: a pill appended after the real ones, with its
-  // own click handler that shows a "coming soon" state instead of a grid.
-  var FUNCTION_ACTIVITY_CAT = "__FUNCTION_ACTIVITY__";
+  function libT(key) { return window.PortfolioI18N ? window.PortfolioI18N.t(key) : key; }
 
-  function showComingSoonGrid() {
-    var gridEl = document.getElementById("libGrid");
-    var i18n = window.PortfolioI18N;
-    gridEl.innerHTML = '<div class="lib-coming-soon">' + (i18n ? i18n.t("libComingSoon") : "Coming soon") + "</div>";
-    requestAnimationFrame(updateScrollIndicator);
-  }
-
-  function appendFunctionActivityPill(filtersEl) {
-    var i18n = window.PortfolioI18N;
-    var pill = document.createElement("button");
-    pill.type = "button";
-    pill.className = "filter-pill filter-pill--soon" + (filtersEl.dataset.active === FUNCTION_ACTIVITY_CAT ? " is-active" : "");
-    pill.textContent = i18n ? i18n.t("libFunctionActivity") : "Function Activity";
-    pill.dataset.cat = FUNCTION_ACTIVITY_CAT;
-    pill.addEventListener("click", function () {
-      filtersEl.dataset.active = FUNCTION_ACTIVITY_CAT;
-      filtersEl.querySelectorAll(".filter-pill").forEach(function (b) { b.classList.remove("is-active"); });
-      pill.classList.add("is-active");
-      showComingSoonGrid();
+  // Tab buttons, hero copy and search placeholder only need the site's own
+  // strings, so they update immediately, even before the engine has loaded.
+  function syncLibTabs() {
+    var tab = libState.tab, act = tab === "activities";
+    LIB_TABS.forEach(function (t) {
+      var btn = document.querySelector('[data-lib-tab="' + t + '"]');
+      if (!btn) return;
+      btn.classList.toggle("is-active", t === tab);
+      btn.setAttribute("aria-selected", String(t === tab));
     });
-    filtersEl.appendChild(pill);
-  }
-
-  function renderLibrary(activeCatOverride) {
-    if (!window.ANIMATIONS || !window.AnimLibRender) return;
-    var filtersEl = document.getElementById("libFilters");
-    var gridEl = document.getElementById("libGrid");
-    if (activeCatOverride !== undefined) filtersEl.dataset.active = activeCatOverride || libFilterLabel();
-    var wasFunctionActivity = filtersEl.dataset.active === FUNCTION_ACTIVITY_CAT;
-
-    // renderFilters only knows the real, data-backed categories — a value it
-    // doesn't recognize falls back to ALL for its own bookkeeping, which is
-    // fine here since our placeholder pill's active state is tracked and
-    // restored separately below.
-    if (wasFunctionActivity) filtersEl.dataset.active = libFilterLabel();
-    window.AnimLibRender.renderFilters(filtersEl, window.ANIMATIONS, function (cat) {
-      window.AnimLibRender.renderGrid(gridEl, window.ANIMATIONS, cat);
-      if (window.PortfolioFX) window.PortfolioFX.rescan();
-      requestAnimationFrame(updateScrollIndicator);
-    });
-    appendFunctionActivityPill(filtersEl);
-
-    if (wasFunctionActivity) {
-      filtersEl.dataset.active = FUNCTION_ACTIVITY_CAT;
-      filtersEl.querySelectorAll(".filter-pill").forEach(function (b) { b.classList.toggle("is-active", b.dataset.cat === FUNCTION_ACTIVITY_CAT); });
-      showComingSoonGrid();
-    } else {
-      var activeCat = filtersEl.dataset.active;
-      window.AnimLibRender.renderGrid(gridEl, window.ANIMATIONS, activeCat && activeCat !== libFilterLabel() ? activeCat : null);
+    var set = function (id, key) { var el = document.getElementById(id); if (el) el.textContent = libT(key); };
+    set("libEyebrow", act ? "actEyebrow" : "libEyebrow");
+    set("libTitlePrefix", act ? "actTitlePrefix" : "libTitlePrefix");
+    set("libTitleAccent", act ? "actTitleAccent" : "libTitleAccent");
+    set("libTitleSuffix", act ? "actTitleSuffix" : "libTitleSuffix");
+    set("libDesc", act ? "actDesc" : "libDesc");
+    var search = document.getElementById("libSearch");
+    if (search) {
+      search.value = libState.q[tab] || "";
+      search.placeholder = act ? libT("libSearchAct") : libT("libSearchAnim").replace("{n}", window.ANIMATIONS ? window.ANIMATIONS.length : "");
     }
+    var countA = document.getElementById("libCountAnimations"), countB = document.getElementById("libCountActivities");
+    if (countA && window.ANIMATIONS) countA.textContent = window.ANIMATIONS.length;
+    if (countB && window.ACTIVITIES) countB.textContent = window.ACTIVITIES.length;
+  }
 
-    var statsRow = document.getElementById("libStatsRow");
-    if (statsRow) window.AnimLibRender.renderStats(statsRow, window.ANIMATIONS);
+  function renderLibrary() {
+    syncLibTabs();
+    var tab = libState.tab, items = libItems(tab), R = window.AnimLibRender;
+    var gridEl = document.getElementById("libGrid");
+    if (!items || !R) return;
+    var active = libState.cat[tab] || R.ALL;
+    var q = (libState.q[tab] || "").trim();
+    var shown = items.filter(function (it) { return R.matches(it, q); });
+
+    R.renderFilters(document.getElementById("libFilters"), items, shown, active, function (key) {
+      libState.cat[tab] = key;
+      renderLibrary();
+      if (window.trackEvent) window.trackEvent("library_filter");
+    });
+    R.renderGrid(gridEl, shown, active);
+    gridEl.classList.toggle("grid--activities", tab === "activities");
+    R.renderStats(document.getElementById("libStatsRow"), items);
     if (window.PortfolioFX) window.PortfolioFX.rescan();
     requestAnimationFrame(updateScrollIndicator);
   }
 
   window.__libRefreshAfterLangChange = function () { renderLibrary(); };
+
+  function showLibLoading() {
+    var gridEl = document.getElementById("libGrid");
+    gridEl.classList.remove("grid--activities");
+    gridEl.innerHTML = '<div class="lib-loading"><span class="spin"></span><span>' + libT("libLoading") + "</span></div>";
+    document.getElementById("libFilters").innerHTML = "";
+    document.getElementById("libStatsRow").innerHTML = "";
+  }
+
+  function setLibTab(tab) {
+    if (LIB_TABS.indexOf(tab) === -1 || tab === libState.tab) return;
+    libState.tab = tab;
+    history.replaceState(null, "", viewHash("library"));
+    var box = document.getElementById("libScroll");
+    if (box) box.scrollTop = 0;
+    if (window.trackEvent) window.trackEvent("library_tab_" + tab);
+    if (tab === "activities" && !window.ACTIVITIES) { syncLibTabs(); showLibLoading(); ensureActivitiesLoaded(); return; }
+    renderLibrary();
+  }
+
+  document.querySelectorAll("[data-lib-tab]").forEach(function (btn) {
+    btn.addEventListener("click", function () { setLibTab(btn.dataset.libTab); });
+  });
+
+  (function wireLibSearch() {
+    var input = document.getElementById("libSearch");
+    if (!input) return;
+    var timer, trackTimer;
+    input.addEventListener("input", function () {
+      libState.q[libState.tab] = input.value;
+      clearTimeout(timer);
+      timer = setTimeout(renderLibrary, 120);
+      clearTimeout(trackTimer);
+      trackTimer = setTimeout(function () { if (input.value.trim() && window.trackEvent) window.trackEvent("library_search"); }, 900);
+    });
+  })();
+
+  document.addEventListener("portfolio:langchange", syncLibTabs);
+
+  function ensureActivitiesLoaded() {
+    if (window.ACTIVITIES || actsLoading || !window.__libEngineReady) return;
+    actsLoading = true;
+    loadScriptsInOrder(["activities/js/activity-runtime.js", "activities/js/activity-modal.js", "activities/data/activities.config.js"], function () {
+      actsLoading = false;
+      if (libState.tab === "activities") renderLibrary(); else syncLibTabs();
+    });
+  }
 
   function ensureLibraryLoaded() {
     if (window.__libEngineReady || libEngineLoading) return;
@@ -373,12 +417,16 @@
         if (!window.AnimLibI18n || !window.AnimLibRender || !window.ANIMATIONS) return; // a script failed to load
         window.AnimLibI18n.set(window.PortfolioI18N ? window.PortfolioI18N.get() : "en");
         window.AnimLibModal.init();
-        var loading = document.getElementById("libLoading");
-        if (loading) loading.remove();
-        renderLibrary(window.AnimLibRender.ALL);
         wireScrollBox("libScrollWrap", "libScroll", "libScrollArrowDown", "libScrollArrowUp");
         window.__libEngineReady = true;
         libEngineLoading = false;
+        if (libState.tab === "activities") { syncLibTabs(); showLibLoading(); ensureActivitiesLoaded(); return; }
+        renderLibrary();
+        // Fetch the activities quietly once the animations are on screen, so
+        // their tab shows its count and opens instantly without delaying
+        // the first render of the default tab.
+        var idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 800); };
+        idle(ensureActivitiesLoaded);
       }
     );
   }
